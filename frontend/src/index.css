@@ -1,0 +1,71 @@
+.icon-container {
+	border-radius: 50%;
+	padding: 8px;
+	width: 40px;
+	height: 40px;
+	transition: background-color 0.3s ease-in-out;
+}
+
+.icon-container:hover {
+	background-color: #1e1e1e;
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #888;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #555;
+}
+
+.h1-margin-bottom {
+    margin-bottom: 32px;  /* Adjust this value as per your design needs */
+    font-size: 1rem;    /* Default value for small screens */
+    font-weight: bold;    /* Makes the text bolder */
+}
+
+/* Media query for medium screens and up */
+@media screen and (min-width: 768px) {  /* 768px is a common breakpoint for medium-sized devices, but you can adjust this value as needed */
+    .h1-margin-bottom {
+        font-size: 2rem;
+    }
+}
+
+
+.heading-margin {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.followers-list {
+  width: 100%;
+  padding: 0;
+  list-style-type: none;
+}
+
+li {
+  width: 100%;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  padding: 5px;
+  border-bottom: 1px solid #e0e0e038;
+  display: flex; /* To ensure Flex behavior if anything interrupts it */
+  justify-content: space-between;
+}
+
+
+.follower-avatar {
+  width: 32px; /* or whatever size you desire */
+  height: 32px;
+  border-radius: 50%; /* to make the image circular */
+  margin-right: 10px; /* add some space between the image and the name */
+  margin-top: 10px;
+  vertical-align: middle; /* align the image with the middle of the text line */
+}
