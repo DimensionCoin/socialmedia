@@ -58,8 +58,10 @@ const FollowerItem = ({ follower }) => {
   );
 };
 
+
 const FollowersPage = ({ followers }) => {
   const navigate = useNavigate();
+  console.log(followers.name);
 
   return (
     <div style={{ width: "100%" }}>

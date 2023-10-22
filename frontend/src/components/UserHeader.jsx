@@ -1,6 +1,13 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Box, Flex, Link, Text, VStack } from "@chakra-ui/layout";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  Image,
+} from "@chakra-ui/react";
 import { Portal } from "@chakra-ui/portal";
 import { Button, useToast } from "@chakra-ui/react";
 import { BsQrCode } from "react-icons/bs";
@@ -18,6 +25,7 @@ const UserHeader = ({ user, posts }) => {
   const currentUser = useRecoilValue(userAtom); // logged in user
   const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const copyURL = () => {
     const currentURL = window.location.href;
@@ -45,14 +53,41 @@ const UserHeader = ({ user, posts }) => {
         </Box>
         <Box>
           {user.profilePic && (
-            <Avatar
-              name={user.name}
-              src={user.profilePic}
-              size={{
-                base: "md",
-                md: "xl",
-              }}
-            />
+            <>
+              <Avatar
+                name={user.name}
+                src={user.profilePic}
+                size={{
+                  base: "md",
+                  md: "xl",
+                }}
+                onClick={() => setIsModalOpen(true)}
+              />
+              <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                size="full"
+              >
+                <ModalOverlay />
+                <ModalContent
+                  bg="transparent"
+                  w="auto"
+                  h="auto"
+                  mx="auto"
+                  my="auto"
+                >
+                  <ModalBody p="0">
+                    <Image
+                      src={user.profilePic}
+                      maxW="100vw"
+                      maxH="100vh"
+                      borderRadius={"full"}
+                      onClick={() => setIsModalOpen(false)}
+                    />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            </>
           )}
           {!user.profilePic && (
             <Avatar
