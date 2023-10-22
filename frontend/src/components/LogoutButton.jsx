@@ -10,7 +10,7 @@ dotenv.config();
 const LogoutButton = () => {
   const setUser = useSetRecoilState(userAtom);
   const showToast = useShowToast();
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
   const handleLogout = async () => {

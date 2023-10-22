@@ -45,7 +45,7 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const { socket, onlineUsers } = useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
 

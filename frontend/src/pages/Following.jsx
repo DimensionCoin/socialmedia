@@ -12,7 +12,7 @@ const Following = () => {
   const currentUser = useRecoilValue(userAtom);
   const { id } = useParams(); // Assuming id is the username of the profile being viewed
   const [following, setFollowing] = useState([]);
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     if (id) {

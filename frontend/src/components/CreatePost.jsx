@@ -45,7 +45,7 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom);
   const { username } = useParams();
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
   const displayButton = useBreakpointValue({ base: "none", md: "flex" });

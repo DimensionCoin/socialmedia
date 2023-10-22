@@ -34,7 +34,7 @@ const Actions = ({ post }) => {
 
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const API_BASE_URL = process.env.API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
   const handleLikeAndUnlike = async (e) => {
