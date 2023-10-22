@@ -25,6 +25,11 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink, Link } from "react-router-dom";
+import dotenv from "dotenv";
+
+
+dotenv.config();
+
 
 export const SettingsPage = () => {
   const showToast = useShowToast();
@@ -33,16 +38,16 @@ export const SettingsPage = () => {
   const [loading, setLoading] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const userId = useRecoilValue(userAtom); // logged in user
-  const navigate = useNavigate()
-    const [user, setUser] = useRecoilState(userAtom);
-
+  const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userAtom);
+  const API_BASE_URL = process.env.API_BASE_URL;
 
   const freezeAccount = async () => {
     if (!window.confirm("Are you sure you want to freeze your account?"))
       return;
 
     try {
-      const res = await fetch("/api/users/freeze", {
+      const res = await fetch(`${API_BASE_URL}/api/users/freeze`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
@@ -60,48 +65,49 @@ export const SettingsPage = () => {
     }
   };
 
-const deleteAccount = async () => {
-  console.log("UserId", userId);
-  if (deleteConfirmation !== "DELETE") {
-    showToast(
-      "Warning",
-      "Please type 'DELETE' to confirm account deletion.",
-      "warning"
-    );
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const res = await fetch(`/api/users/delete/${userId._id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to delete account");
+  const deleteAccount = async () => {
+    console.log("UserId", userId);
+    if (deleteConfirmation !== "DELETE") {
+      showToast(
+        "Warning",
+        "Please type 'DELETE' to confirm account deletion.",
+        "warning"
+      );
+      return;
     }
 
-    const data = await res.json();
+    setLoading(true);
 
-    if (data.error) {
-      throw new Error(data.error);
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/users/delete/${userId._id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to delete account");
+      }
+
+      const data = await res.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      if (data.success || res.ok) {
+        showToast("Success", "Your account has been deleted", "success");
+        setLoading(false);
+        await logout();
+        navigate("/auth");
+      }
+    } catch (error) {
+      showToast("Error", error.message, "error");
+      console.log("ERROR", error.message);
+      setLoading(false); // ensure that loading state is reset on error
     }
-    if (data.success || res.ok) {
-      showToast("Success", "Your account has been deleted", "success");
-      setLoading(false);
-      await logout();
-      navigate("/auth");
-    }
-
-  } catch (error) {
-    showToast("Error", error.message, "error");
-    console.log("ERROR", error.message);
-    setLoading(false); // ensure that loading state is reset on error
-  }
-};
-
+  };
 
   if (!userId) return null; // or some loading or placeholder component
 
@@ -203,8 +209,3 @@ const deleteAccount = async () => {
     </>
   );
 };
-
-
-
-
-

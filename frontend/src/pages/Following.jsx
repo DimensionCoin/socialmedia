@@ -4,16 +4,20 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Flex, Text } from "@chakra-ui/react";
 import FollowersPage from "../components/FollowersPage";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const Following = () => {
   const currentUser = useRecoilValue(userAtom);
   const { id } = useParams(); // Assuming id is the username of the profile being viewed
   const [following, setFollowing] = useState([]);
+  const API_BASE_URL = process.env.API_BASE_URL;
 
   useEffect(() => {
     if (id) {
       // Fetch the followers
-      fetch(`/api/users/${id}/following`)
+      fetch(`${API_BASE_URL}/api/users/${id}/following`)
         .then((res) => res.json())
         .then((data) => {
           setFollowing(data);

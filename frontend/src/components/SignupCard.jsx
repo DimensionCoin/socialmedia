@@ -20,6 +20,10 @@ import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../atoms/authAtom";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,11 +37,13 @@ export default function SignupCard() {
 
   const showToast = useShowToast();
   const setUser = useSetRecoilState(userAtom);
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   const handleSignup = async () => {
     console.log(inputs);
     try {
-      const res = await fetch("/api/users/signup", {
+      const res = await fetch(`${API_BASE_URL}/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

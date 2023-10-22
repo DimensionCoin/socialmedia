@@ -23,6 +23,9 @@ import {
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { BsFillImageFill } from "react-icons/bs";
 import usePreviewImg from "../hooks/usePreviewImg";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const MessageInput = ({ setMessages }) => {
   const [messageText, setMessageText] = useState("");
@@ -33,6 +36,8 @@ const MessageInput = ({ setMessages }) => {
   const { onClose } = useDisclosure();
   const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
   const [isSending, setIsSending] = useState(false);
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -42,7 +47,7 @@ const MessageInput = ({ setMessages }) => {
     setIsSending(true);
 
     try {
-      const res = await fetch("/api/messages", {
+      const res = await fetch(`${API_BASE_URL}/api/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

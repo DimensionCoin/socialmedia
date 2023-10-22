@@ -27,8 +27,12 @@ import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 import postsAtom from "../atoms/postsAtom";
 import { useParams } from "react-router-dom";
+import dotenv from "dotenv";
+
 
 const MAX_CHAR = 10000;
+
+dotenv.config();
 
 const CreatePost = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,6 +45,8 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom);
   const { username } = useParams();
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   const displayButton = useBreakpointValue({ base: "none", md: "flex" });
 
@@ -60,7 +66,7 @@ const CreatePost = () => {
   const handleCreatePost = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/posts/create", {
+      const res = await fetch(`${API_BASE_URL}/api/posts/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

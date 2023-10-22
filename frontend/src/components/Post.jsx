@@ -13,6 +13,10 @@ import postsAtom from "../atoms/postsAtom";
 import { FaUserCircle } from "react-icons/fa"
 import Linkify from "react-linkify";
 import CustomLink from "./CustomLink";
+import dotenv from "dotenv";
+
+
+dotenv.config();
 
 
 const Post = ({ post, postedBy }) => {
@@ -22,14 +26,20 @@ const Post = ({ post, postedBy }) => {
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [originalPoster, setOriginalPoster] = useState(null);
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   useEffect(() => {
     const getOriginalPoster = async () => {
       try {
         if (!post.repostOf) return; // No repostOf field means it's not a repost
-        const originalPost = await fetch("/api/posts/" + post.repostOf);
+        const originalPost = await fetch(
+          `${API_BASE_URL}/api/posts/` + post.repostOf
+        );
         const postData = await originalPost.json();
-        const res = await fetch("/api/users/profile/" + postData.postedBy);
+        const res = await fetch(
+          `${API_BASE_URL}/api/users/profile/` + postData.postedBy
+        );
         const userData = await res.json();
         setOriginalPoster(userData);
       } catch (error) {
@@ -45,7 +55,9 @@ const Post = ({ post, postedBy }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await fetch("/api/users/profile/" + postedBy);
+        const res = await fetch(
+          `${API_BASE_URL}/api/users/profile/` + postedBy
+        );
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -67,7 +79,7 @@ const Post = ({ post, postedBy }) => {
       e.preventDefault();
       if (!window.confirm("Are you sure you want to delete this post?")) return;
 
-      const res = await fetch(`/api/posts/${post._id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/posts/${post._id}`, {
         method: "DELETE",
       });
       const data = await res.json();

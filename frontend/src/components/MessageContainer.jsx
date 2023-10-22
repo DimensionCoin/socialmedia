@@ -20,6 +20,10 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext.jsx";
 import messageSound from "../assets/sounds/message.mp3";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const MessageContainer = () => {
   const showToast = useShowToast();
   const selectedConversation = useRecoilValue(selectedConversationAtom);
@@ -29,6 +33,8 @@ const MessageContainer = () => {
   const { socket } = useSocket();
   const setConversations = useSetRecoilState(conversationsAtom);
   const messageEndRef = useRef(null);
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   useEffect(() => {
     socket.on("newMessage", (message) => {
@@ -101,7 +107,9 @@ const MessageContainer = () => {
       setMessages([]);
       try {
         if (selectedConversation.mock) return;
-        const res = await fetch(`/api/messages/${selectedConversation.userId}`);
+        const res = await fetch(
+          `${API_BASE_URL}/api/messages/${selectedConversation.userId}`
+        );
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

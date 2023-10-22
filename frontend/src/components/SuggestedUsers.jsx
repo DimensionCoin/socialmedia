@@ -2,17 +2,23 @@ import { Box, Flex, Skeleton, SkeletonCircle, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SuggestedUser from "./SuggestedUser";
 import useShowToast from "../hooks/useShowToast";
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables at the very beginning
+
 
 const SuggestedUsers = () => {
   const [loading, setLoading] = useState(true);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const showToast = useShowToast();
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   useEffect(() => {
     const getSuggestedUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/users/suggested");
+        const res = await fetch(`${API_BASE_URL}/api/users/suggested`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

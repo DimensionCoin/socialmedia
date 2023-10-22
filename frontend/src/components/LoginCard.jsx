@@ -19,12 +19,17 @@ import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../atoms/authAtom";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const setUser = useSetRecoilState(userAtom);
   const [loading, setLoading] = useState(false);
+  const API_BASE_URL = process.env.API_BASE_URL;
 
   const [inputs, setInputs] = useState({
     username: "",
@@ -34,7 +39,7 @@ export default function LoginCard() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/users/login", {
+      const res = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

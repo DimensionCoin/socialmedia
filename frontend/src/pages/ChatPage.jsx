@@ -29,6 +29,9 @@ import {
 } from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const ChatPage = () => {
   const [searchingUser, setSearchingUser] = useState(false);
@@ -42,6 +45,10 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const { socket, onlineUsers } = useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const API_BASE_URL = process.env.API_BASE_URL;
+
+
+
 
   useEffect(() => {
     socket?.on("messagesSeen", ({ conversationId }) => {
@@ -66,7 +73,7 @@ const ChatPage = () => {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await fetch("/api/messages/conversations");
+        const res = await fetch(`${API_BASE_URL}/api/messages/conversations`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -88,7 +95,9 @@ const ChatPage = () => {
     e.preventDefault();
     setSearchingUser(true);
     try {
-      const res = await fetch(`/api/users/profile/${searchText}`);
+      const res = await fetch(
+        `${API_BASE_URL}/api/users/profile/${searchText}`
+      );
       const searchedUser = await res.json();
       if (searchedUser.error) {
         showToast("Error", searchedUser.error, "error");

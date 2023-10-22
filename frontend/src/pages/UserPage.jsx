@@ -7,6 +7,10 @@ import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
+import dotenv from "dotenv";
+
+
+dotenv.config();
 
 const UserPage = () => {
   const { user, loading } = useGetUserProfile();
@@ -14,13 +18,15 @@ const UserPage = () => {
   const showToast = useShowToast();
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [fetchingPosts, setFetchingPosts] = useState(true);
+  const API_BASE_URL = process.env.API_BASE_URL;
+
 
   useEffect(() => {
     const getPosts = async () => {
       if (!user) return;
       setFetchingPosts(true);
       try {
-        const res = await fetch(`/api/posts/user/${username}`);
+        const res = await fetch(`${API_BASE_URL}/api/posts/user/${username}`);
         const data = await res.json();
         console.log(data);
         setPosts(data);
