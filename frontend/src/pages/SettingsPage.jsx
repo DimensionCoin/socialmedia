@@ -25,10 +25,7 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink, Link } from "react-router-dom";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 
 export const SettingsPage = () => {

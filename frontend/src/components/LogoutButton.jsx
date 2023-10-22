@@ -3,9 +3,7 @@ import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 import { FiLogOut } from "react-icons/fi";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const LogoutButton = () => {
   const setUser = useSetRecoilState(userAtom);

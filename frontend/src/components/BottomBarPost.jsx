@@ -26,9 +26,7 @@ import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 import postsAtom from "../atoms/postsAtom";
 import { useParams } from "react-router-dom";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const MAX_CHAR = 10000;
 

@@ -13,10 +13,7 @@ import postsAtom from "../atoms/postsAtom";
 import { FaUserCircle } from "react-icons/fa"
 import Linkify from "react-linkify";
 import CustomLink from "./CustomLink";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 
 const Post = ({ post, postedBy }) => {

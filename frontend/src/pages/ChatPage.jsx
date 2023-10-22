@@ -29,9 +29,7 @@ import {
 } from "../atoms/messagesAtom";
 import userAtom from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const ChatPage = () => {
   const [searchingUser, setSearchingUser] = useState(false);

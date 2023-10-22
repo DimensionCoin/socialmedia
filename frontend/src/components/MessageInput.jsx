@@ -23,9 +23,7 @@ import {
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { BsFillImageFill } from "react-icons/bs";
 import usePreviewImg from "../hooks/usePreviewImg";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const MessageInput = ({ setMessages }) => {
   const [messageText, setMessageText] = useState("");

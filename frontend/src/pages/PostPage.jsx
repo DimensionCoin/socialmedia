@@ -21,11 +21,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import postsAtom from "../atoms/postsAtom";
 import Linkify from "react-linkify";
 import CustomLink from "../components/CustomLink";
-import dotenv from "dotenv";
 
-
-
-dotenv.config();
 
 const PostPage = () => {
   const { user, loading } = useGetUserProfile();

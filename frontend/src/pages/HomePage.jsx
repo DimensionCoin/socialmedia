@@ -7,10 +7,7 @@ import postsAtom from "../atoms/postsAtom";
 import SuggestedUsers from "../components/SuggestedUsers";
 import CreatePost from "../components/CreatePost";
 import AllPost from "../components/AllPost";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 const HomePage = () => {
   const [posts, setPosts] = useRecoilState(postsAtom);

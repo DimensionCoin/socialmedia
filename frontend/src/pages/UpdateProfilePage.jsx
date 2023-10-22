@@ -16,10 +16,7 @@ import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import { Link as RouterLink, useNavigate, Link } from "react-router-dom";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 
 export default function UpdateProfilePage() {

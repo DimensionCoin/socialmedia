@@ -7,10 +7,7 @@ import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 const UserPage = () => {
   const { user, loading } = useGetUserProfile();

@@ -4,9 +4,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { Flex, Text } from "@chakra-ui/react";
 import FollowersPage from "../components/FollowersPage";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 const Following = () => {
   const currentUser = useRecoilValue(userAtom);

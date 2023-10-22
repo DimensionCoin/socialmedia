@@ -20,9 +20,6 @@ import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../atoms/authAtom";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 
 export default function SignupCard() {

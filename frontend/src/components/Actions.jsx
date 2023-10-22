@@ -19,9 +19,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
 import postsAtom from "../atoms/postsAtom";
-import dotenv from "dotenv";
 
-dotenv.config();
 
 
 const Actions = ({ post }) => {

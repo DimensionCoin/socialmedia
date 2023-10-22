@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Post from "./Post";
 import useShowToast from "../hooks/useShowToast";
-import dotenv from "dotenv";
 
-
-dotenv.config();
 
 
 const AllPost = () => {
