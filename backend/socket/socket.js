@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://nicksocial.vercel.app",
+    origin: "https://socialmedia-git-master-dimensioncoin.vercel.app",
     methods: ["GET", "POST"],
   },
 });

@@ -29,7 +29,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://nicksocial.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://nicksocial.app",
+      "https://socialmedia-git-master-dimensioncoin.vercel.app",
+    ],
   })
 );
 
