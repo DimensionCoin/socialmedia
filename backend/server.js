@@ -27,15 +27,17 @@ app.use(express.json({ limit: "50mb" })); // To parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://nicksocial.app",
-      "https://socialmedia-git-master-dimensioncoin.vercel.app",
-    ],
-  })
-);
+const corsOptions = {
+  origin: [
+    "https://nicksocial.vercel.app",
+    "http://localhost:3000",
+    "https://socialmedia-n79pu2bbk-dimensioncoin.vercel.app",
+  ],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 
 
