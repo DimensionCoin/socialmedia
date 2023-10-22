@@ -32,7 +32,7 @@ const Header = () => {
       {user && (
         <Flex alignItems={"center"} gap={4}>
           <Link as={RouterLink} to="/">
-            <AiFillHome size={20} />
+            <Image src="/logo.png" alt="logo" w={10} h={10}/>
           </Link>
           <div onClick={toggleColorMode} style={{ cursor: "pointer" }}>
             {colorMode === "dark" ? (
