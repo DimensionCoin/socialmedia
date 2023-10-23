@@ -34,6 +34,7 @@ export default function LoginCard() {
     password: "",
   });
   const showToast = useShowToast();
+
   const handleLogin = async () => {
     setLoading(true);
     try {
@@ -44,19 +45,34 @@ export default function LoginCard() {
         },
         body: JSON.stringify(inputs),
       });
+
+      // Check if the server responded with a non-OK status
+      if (!res.ok) {
+        const data = await res.json();
+        showToast("Server Error", data.error || res.statusText, "error");
+        return;
+      }
+
       const data = await res.json();
       if (data.error) {
         showToast("Error", data.error, "error");
         return;
       }
+
       localStorage.setItem("user-threads", JSON.stringify(data));
       setUser(data);
     } catch (error) {
-      showToast("Error", error, "error");
+      showToast(
+        "Error",
+        error.message || "An unexpected error occurred",
+        "error"
+      );
+      console.error("Error during login:", error); // Logs error for further debugging
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <Flex align={"center"} justify={"center"}>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
