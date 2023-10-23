@@ -48,8 +48,14 @@ export default function LoginCard() {
 
       // Check if the server responded with a non-OK status
       if (!res.ok) {
-        const data = await res.json();
-        showToast("Server Error", data.error || res.statusText, "error");
+        let errorMessage = res.statusText;
+        try {
+          const data = await res.json();
+          errorMessage = data.error || errorMessage;
+        } catch {
+          // If parsing as JSON fails, it's okay, we'll use the statusText
+        }
+        showToast("Server Error", errorMessage, "error");
         return;
       }
 
