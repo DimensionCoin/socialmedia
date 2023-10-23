@@ -8,12 +8,11 @@ import SuggestedUsers from "../components/SuggestedUsers";
 import CreatePost from "../components/CreatePost";
 import AllPost from "../components/AllPost";
 
-
 const HomePage = () => {
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [loading, setLoading] = useState(true);
   const showToast = useShowToast();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const getFeedPosts = async () => {
@@ -54,7 +53,7 @@ const HomePage = () => {
               {" "}
               {/* Added display prop */}
               <SuggestedUsers />
-              <Divider mt={2} borderWidth={"2px"}/>
+              <Divider mt={2} borderWidth={"2px"} />
               <AllPost />
             </Box>
             <Box

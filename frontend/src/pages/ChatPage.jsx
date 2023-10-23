@@ -30,7 +30,6 @@ import {
 import userAtom from "../atoms/userAtom";
 import { useSocket } from "../context/SocketContext";
 
-
 const ChatPage = () => {
   const [searchingUser, setSearchingUser] = useState(false);
   const [loadingConversations, setLoadingConversations] = useState(true);
@@ -43,10 +42,7 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const { socket, onlineUsers } = useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
-
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     socket?.on("messagesSeen", ({ conversationId }) => {
