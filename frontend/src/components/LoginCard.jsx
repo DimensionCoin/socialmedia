@@ -29,7 +29,7 @@ export default function LoginCard() {
   const [loading, setLoading] = useState(false);
 const API_BASE_URL =
   process.env.VITE_API_BASE_URL ||
-  "https://socialmediabackend-wr8v.onrender.com";
+  
 
   console.log("API_BASE_URL:", API_BASE_URL);
 
