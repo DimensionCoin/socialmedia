@@ -32,6 +32,8 @@ const corsOptions = {
     "https://nicksocial.vercel.app",
     "http://localhost:3000",
     "https://socialmedia-n79pu2bbk-dimensioncoin.vercel.app",
+    "https://nicksocialbackend.vercel.app/",
+    "https://socialmediabackend-wr8v.onrender.com",
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
