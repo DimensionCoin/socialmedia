@@ -34,13 +34,12 @@ export default function SignupCard() {
 
   const showToast = useShowToast();
   const setUser = useSetRecoilState(userAtom);
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 
   const handleSignup = async () => {
     console.log(inputs);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/signup`, {
+      const res = await fetch(`/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -20,30 +20,21 @@ import authScreenAtom from "../atoms/authAtom";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 
-
-
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const setUser = useSetRecoilState(userAtom);
   const [loading, setLoading] = useState(false);
-const API_BASE_URL =
-  process.env.VITE_API_BASE_URL ||
-  
-
-  console.log("API_BASE_URL:", API_BASE_URL);
-
 
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
   });
   const showToast = useShowToast();
-
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/login`, {
+      const res = await fetch("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,39 +42,26 @@ const API_BASE_URL =
         body: JSON.stringify(inputs),
       });
 
-      // Check if the server responded with a non-OK status
       if (!res.ok) {
-        let errorMessage = res.statusText;
-        try {
-          const data = await res.json();
-          errorMessage = data.error || errorMessage;
-        } catch {
-          // If parsing as JSON fails, it's okay, we'll use the statusText
-        }
-        showToast("Server Error", errorMessage, "error");
+        const data = await res.json();
+        showToast("Error", data.message || "Something went wrong", "error");
         return;
       }
 
       const data = await res.json();
+
       if (data.error) {
         showToast("Error", data.error, "error");
         return;
       }
-
       localStorage.setItem("user-threads", JSON.stringify(data));
       setUser(data);
     } catch (error) {
-      showToast(
-        "Error",
-        error.message || "An unexpected error occurred",
-        "error"
-      );
-      console.error("Error during login:", error); // Logs error for further debugging
+      showToast("Error", error.message, "error");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Flex align={"center"} justify={"center"}>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>

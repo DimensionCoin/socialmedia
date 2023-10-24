@@ -7,14 +7,12 @@ import postRoutes from "./routes/postRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
 import { app, server } from "./socket/socket.js";
-import cors from "cors"; 
-
 
 dotenv.config();
 
 connectDB();
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,22 +24,6 @@ cloudinary.config({
 app.use(express.json({ limit: "50mb" })); // To parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 app.use(cookieParser());
-
-const corsOptions = {
-  origin: [
-    "https://nicksocial.vercel.app",
-    "http://localhost:3000",
-    "https://socialmedia-n79pu2bbk-dimensioncoin.vercel.app",
-    "https://nicksocialbackend.vercel.app/",
-    "https://socialmediabackend-wr8v.onrender.com",
-  ],
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-
 
 // Routes
 app.use("/api/users", userRoutes);

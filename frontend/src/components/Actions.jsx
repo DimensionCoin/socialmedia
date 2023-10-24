@@ -32,7 +32,7 @@ const Actions = ({ post }) => {
 
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
+
 
 
   const handleLikeAndUnlike = async (e) => {
@@ -47,7 +47,7 @@ const Actions = ({ post }) => {
     if (isLiking) return;
     setIsLiking(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/posts/like/` + post._id, {
+      const res = await fetch(`/api/posts/like/` + post._id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Actions = ({ post }) => {
     if (isReplying) return;
     setIsReplying(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/posts/reply/` + post._id, {
+      const res = await fetch(`/api/posts/reply/` + post._id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const Actions = ({ post }) => {
         "error"
       );
     try {
-      const res = await fetch(`${API_BASE_URL}/api/posts/repost/` + post._id, {
+      const res = await fetch(`/api/posts/repost/` + post._id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

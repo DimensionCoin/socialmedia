@@ -34,7 +34,6 @@ const MessageInput = ({ setMessages }) => {
   const { onClose } = useDisclosure();
   const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
   const [isSending, setIsSending] = useState(false);
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleSendMessage = async (e) => {
@@ -45,7 +44,7 @@ const MessageInput = ({ setMessages }) => {
     setIsSending(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/messages`, {
+      const res = await fetch(`/api/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

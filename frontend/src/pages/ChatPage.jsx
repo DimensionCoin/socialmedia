@@ -43,7 +43,6 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const { socket, onlineUsers } = useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
 
@@ -71,7 +70,7 @@ const ChatPage = () => {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/messages/conversations`);
+        const res = await fetch(`/api/messages/conversations`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

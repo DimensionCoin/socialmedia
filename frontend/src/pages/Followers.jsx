@@ -10,13 +10,12 @@ const Followers = () => {
   const { id } = useParams();
   const [followers, setFollowers] = useState([]);
   const [username, setUsername] = useState(""); // New state for the username
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   useEffect(() => {
     if (id) {
       // Fetch the followers
-      fetch(`${API_BASE_URL}/api/users/${id}/followers`)
+      fetch(`/api/users/${id}/followers`)
         .then((res) => res.json())
         .then((data) => {
           setFollowers(data);

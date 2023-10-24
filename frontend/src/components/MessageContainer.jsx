@@ -31,7 +31,6 @@ const MessageContainer = () => {
   const { socket } = useSocket();
   const setConversations = useSetRecoilState(conversationsAtom);
   const messageEndRef = useRef(null);
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   useEffect(() => {
@@ -106,7 +105,7 @@ const MessageContainer = () => {
       try {
         if (selectedConversation.mock) return;
         const res = await fetch(
-          `${API_BASE_URL}/api/messages/${selectedConversation.userId}`
+          `/api/messages/${selectedConversation.userId}`
         );
         const data = await res.json();
         if (data.error) {

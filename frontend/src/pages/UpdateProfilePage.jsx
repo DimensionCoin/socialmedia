@@ -36,7 +36,6 @@ export default function UpdateProfilePage() {
   const { handleImageChange, imgUrl } = usePreviewImg();
 
   const navigate = useNavigate();
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleSubmit = async (e) => {
@@ -44,7 +43,7 @@ export default function UpdateProfilePage() {
     if (updating) return;
     setUpdating(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/update/${user._id}`, {
+      const res = await fetch(`/api/users/update/${user._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

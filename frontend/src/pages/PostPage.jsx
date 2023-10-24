@@ -32,7 +32,6 @@ const PostPage = () => {
   const navigate = useNavigate();
 
   const currentPost = posts[0];
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleprofile = () => {
@@ -43,7 +42,7 @@ const PostPage = () => {
     const getPost = async () => {
       setPosts([]);
       try {
-        const res = await fetch(`${API_BASE_URL}/api/posts/${pid}`);
+        const res = await fetch(`/api/posts/${pid}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

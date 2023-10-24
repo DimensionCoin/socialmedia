@@ -10,8 +10,6 @@ const useFollowUnfollow = (user) => {
   );
   const [updating, setUpdating] = useState(false);
   const showToast = useShowToast();
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
-
 
   const handleFollowUnfollow = async () => {
     if (!currentUser) {
@@ -22,7 +20,7 @@ const useFollowUnfollow = (user) => {
 
     setUpdating(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/follow/${user._id}`, {
+      const res = await fetch(`/api/users/follow/${user._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

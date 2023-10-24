@@ -15,7 +15,6 @@ const UserPage = () => {
   const showToast = useShowToast();
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [fetchingPosts, setFetchingPosts] = useState(true);
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   useEffect(() => {
@@ -23,7 +22,7 @@ const UserPage = () => {
       if (!user) return;
       setFetchingPosts(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/api/posts/user/${username}`);
+        const res = await fetch(`/api/posts/user/${username}`);
         const data = await res.json();
         console.log(data);
         setPosts(data);

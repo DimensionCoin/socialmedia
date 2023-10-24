@@ -41,7 +41,6 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom);
   const { username } = useParams();
-  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleTextChange = (e) => {
@@ -60,7 +59,7 @@ const CreatePost = () => {
   const handleCreatePost = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/posts/create`, {
+      const res = await fetch(`/api/posts/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
