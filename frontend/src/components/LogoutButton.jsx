@@ -8,7 +8,7 @@ import { FiLogOut } from "react-icons/fi";
 const LogoutButton = () => {
   const setUser = useSetRecoilState(userAtom);
   const showToast = useShowToast();
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleLogout = async () => {

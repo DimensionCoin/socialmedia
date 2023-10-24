@@ -27,8 +27,9 @@ export default function LoginCard() {
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const setUser = useSetRecoilState(userAtom);
   const [loading, setLoading] = useState(false);
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+const API_BASE_URL =
+  process.env.VITE_API_BASE_URL ||
+  "https://socialmediabackend-wr8v.onrender.com";
 
   console.log("API_BASE_URL:", API_BASE_URL);
 

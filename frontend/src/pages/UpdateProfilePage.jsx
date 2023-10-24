@@ -36,7 +36,7 @@ export default function UpdateProfilePage() {
   const { handleImageChange, imgUrl } = usePreviewImg();
 
   const navigate = useNavigate();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleSubmit = async (e) => {

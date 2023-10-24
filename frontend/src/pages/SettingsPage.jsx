@@ -26,6 +26,8 @@ import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink, Link } from "react-router-dom";
 
+
+
 export const SettingsPage = () => {
   const showToast = useShowToast();
   const logout = useLogout();
@@ -35,7 +37,7 @@ export const SettingsPage = () => {
   const userId = useRecoilValue(userAtom); // logged in user
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userAtom);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
   const freezeAccount = async () => {
     if (!window.confirm("Are you sure you want to freeze your account?"))

@@ -5,11 +5,12 @@ import userAtom from "../atoms/userAtom";
 import { Flex, Text } from "@chakra-ui/react";
 import FollowersPage from "../components/FollowersPage";
 
+
 const Following = () => {
   const currentUser = useRecoilValue(userAtom);
   const { id } = useParams(); // Assuming id is the username of the profile being viewed
   const [following, setFollowing] = useState([]);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (id) {

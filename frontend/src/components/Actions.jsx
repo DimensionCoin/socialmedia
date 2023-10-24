@@ -32,7 +32,7 @@ const Actions = ({ post }) => {
 
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 
   const handleLikeAndUnlike = async (e) => {

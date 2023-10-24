@@ -22,6 +22,7 @@ import postsAtom from "../atoms/postsAtom";
 import Linkify from "react-linkify";
 import CustomLink from "../components/CustomLink";
 
+
 const PostPage = () => {
   const { user, loading } = useGetUserProfile();
   const [posts, setPosts] = useRecoilState(postsAtom);
@@ -31,7 +32,8 @@ const PostPage = () => {
   const navigate = useNavigate();
 
   const currentPost = posts[0];
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
+
 
   const handleprofile = () => {
     navigate(`/${user.username}`);

@@ -10,7 +10,8 @@ const Followers = () => {
   const { id } = useParams();
   const [followers, setFollowers] = useState([]);
   const [username, setUsername] = useState(""); // New state for the username
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = process.env.VITE_API_BASE_URL;
+
 
   useEffect(() => {
     if (id) {
@@ -37,7 +38,7 @@ const Followers = () => {
         <Text fontSize={"2xl"} fontWeight={"bold"}>
           Followers
         </Text>
-        <FollowersPage followers={followers} />
+        <FollowersPage followers={followers}  />
       </Flex>
     </div>
   );
