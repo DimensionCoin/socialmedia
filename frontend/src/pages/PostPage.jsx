@@ -95,9 +95,10 @@ const PostPage = () => {
             size={"md"}
             name="user"
             onClick={handleprofile}
+            
           />
           <Flex>
-            <Text fontSize={"sm"} fontWeight={"bold"}>
+            <Text fontSize={"sm"} fontWeight={"bold"} >
               {user.username}
             </Text>
             <Image src="/verified.png" w="4" h={4} ml={4} />
@@ -123,7 +124,7 @@ const PostPage = () => {
         </Flex>
       </Flex>
 
-      <Text fontSize={"sm"}>
+      <Text fontSize={"md"} mt={6} mb={2}>
         <Linkify
           componentDecorator={(decoratedHref, decoratedText, key) => (
             <CustomLink key={key} href={decoratedHref}>

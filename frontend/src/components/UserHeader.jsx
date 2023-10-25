@@ -20,6 +20,7 @@ import QRCode from "qrcode.react";
 import { useState } from "react";
 import {AiFillGithub} from "react-icons/ai"
 import {FaXTwitter} from "react-icons/fa6"
+import { FaDonate } from "react-icons/fa";
 
 const UserHeader = ({ user, posts }) => {
   const toast = useToast();
@@ -59,7 +60,7 @@ const UserHeader = ({ user, posts }) => {
         {/* Position the Avatar at the bottom middle of the headerImage */}
         <Box
           position="absolute"
-          bottom={4}
+          bottom={-4}
           left="50%"
           transform="translateX(-50%)"
         >
@@ -91,16 +92,22 @@ const UserHeader = ({ user, posts }) => {
                   my="auto"
                 >
                   <ModalBody p="0">
-                    <Image
-                      src={user.profilePic}
-                      maxW="100vw"
-                      maxH="100vh"
-                      borderRadius={"full"}
-                      onClick={() => setIsModalOpen(false)}
-                    />
+                    <Flex
+                      alignItems="center"
+                      justifyContent="center"
+                      height="100vh"
+                    >
+                      <Image
+                        src={user.profilePic}
+                        maxW="100vw"
+                        maxH="100vh"
+                        borderRadius={"md"}
+                        onClick={() => setIsModalOpen(false)}
+                      />
+                    </Flex>
                   </ModalBody>
                 </ModalContent>
-              </Modal>{" "}
+              </Modal>
             </>
           ) : (
             <Avatar
@@ -116,8 +123,8 @@ const UserHeader = ({ user, posts }) => {
       </Box>
 
       {/* User's name and username */}
-      <Box textAlign="start">
-        <Text fontSize={"2xl"} fontWeight={"bold"}>
+      <Box textAlign="start" >
+        <Text fontSize={"2xl"} fontWeight={"bold"} mt={3}>
           {user.name}
         </Text>
         <Text fontSize={"sm"}>@{user.username}</Text>
@@ -129,17 +136,22 @@ const UserHeader = ({ user, posts }) => {
         <Link href={user.githubLink} isExternal mt={2}>
           <AiFillGithub />
         </Link>
-        <Link href={user.xLink || "" } isExternal mt={2}>
-        <FaXTwitter/>
+        <Link href={user.xLink || ""} isExternal mt={2}>
+          <FaXTwitter />
         </Link>
         {currentUser?._id !== user._id && (
-          <Button
-            size={"sm"}
-            onClick={handleFollowUnfollow}
-            isLoading={updating}
-          >
-            {following ? "Unfollow" : "Follow"}
-          </Button>
+          <>
+            <Box mt={2}>
+              <FaDonate />
+            </Box>
+            <Button
+              size={"sm"}
+              onClick={handleFollowUnfollow}
+              isLoading={updating}
+            >
+              {following ? "Unfollow" : "Follow"}
+            </Button>
+          </>
         )}
       </Flex>
       <Flex w={"full"} justifyContent={"space-between"}>

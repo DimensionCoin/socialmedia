@@ -10,11 +10,10 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import postsAtom from "../atoms/postsAtom";
-import { FaUserCircle } from "react-icons/fa"
+import { FaUserCircle } from "react-icons/fa";
 import Linkify from "react-linkify";
 import CustomLink from "./CustomLink";
-
-
+import { Modal, ModalOverlay, ModalContent, ModalBody } from "@chakra-ui/react";
 
 const Post = ({ post, postedBy }) => {
   const [user, setUser] = useState(null);
@@ -23,18 +22,15 @@ const Post = ({ post, postedBy }) => {
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [originalPoster, setOriginalPoster] = useState(null);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const getOriginalPoster = async () => {
       try {
         if (!post.repostOf) return; // No repostOf field means it's not a repost
-        const originalPost = await fetch(
-          `/api/posts/` + post.repostOf
-        );
+        const originalPost = await fetch(`/api/posts/` + post.repostOf);
         const postData = await originalPost.json();
-        const res = await fetch(
-          `/api/users/profile/` + postData.postedBy
-        );
+        const res = await fetch(`/api/users/profile/` + postData.postedBy);
         const userData = await res.json();
         setOriginalPoster(userData);
       } catch (error) {
@@ -46,13 +42,10 @@ const Post = ({ post, postedBy }) => {
     getOriginalPoster();
   }, [post, showToast]);
 
-
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await fetch(
-          `/api/users/profile/` + postedBy
-        );
+        const res = await fetch(`/api/users/profile/` + postedBy);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -124,7 +117,6 @@ const Post = ({ post, postedBy }) => {
               top={"-10px"}
               left="15px"
               padding={"3px"}
-              
             />
           )}
 
@@ -236,7 +228,43 @@ const Post = ({ post, postedBy }) => {
             border={"1px solid"}
             borderColor={"gray.light"}
           >
-            <Image src={post.img} w={"full"} />
+            <Image
+              src={post.img}
+              w={"full"}
+              onClick={() => setIsModalOpen(true)}
+            />
+            <Modal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              size="full"
+            >
+              <ModalOverlay />
+              <ModalContent
+                bg="transparent"
+                w="100vw"
+                h="100vh"
+                position="fixed"
+                top={0}
+                right={0}
+                bottom={0}
+                left={0}
+              >
+                <ModalBody p="0">
+                  <Flex
+                    alignItems="center"
+                    justifyContent="center"
+                    width="100%"
+                    height="100%"
+                    onClick={() => {
+                      console.log("Image clicked!"); 
+                      setIsModalOpen(false);
+                    }}
+                  >
+                    <Image src={post.img} w={"full"} />
+                  </Flex>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
           </Box>
         )}
 
@@ -249,4 +277,3 @@ const Post = ({ post, postedBy }) => {
 };
 
 export default Post;
-
