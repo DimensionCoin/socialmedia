@@ -18,7 +18,8 @@ import { Link as RouterLink } from "react-router-dom";
 import useFollowUnfollow from "../hooks/useFollowUnfollow";
 import QRCode from "qrcode.react";
 import { useState } from "react";
-
+import {AiFillGithub} from "react-icons/ai"
+import {FaXTwitter} from "react-icons/fa6"
 
 const UserHeader = ({ user, posts }) => {
   const toast = useToast();
@@ -39,28 +40,41 @@ const UserHeader = ({ user, posts }) => {
       });
     });
   };
-  console.log(user.posts);
+
   return (
-    <VStack gap={4} alignItems={"start"}>
-      <Flex justifyContent={"space-between"} w={"full"}>
-        <Box>
-          <Text fontSize={"2xl"} fontWeight={"bold"}>
-            {user.name}
-          </Text>
-          <Flex gap={2} alignItems={"center"}>
-            <Text fontSize={"sm"}>@{user.username}</Text>
-          </Flex>
-        </Box>
-        <Box>
-          {user.profilePic && (
+    <VStack gap={4} alignItems={"start"} w={"full"}>
+      {/* Display the header image */}
+      <Box w={"full"} position="relative">
+        {user.headerImage && (
+          <Image
+            src={user.headerImage}
+            alt="User Header Image"
+            w="100%"
+            h="300px"
+            borderRadius="lg"
+            objectFit={"cover"}
+          />
+        )}
+
+        {/* Position the Avatar at the bottom middle of the headerImage */}
+        <Box
+          position="absolute"
+          bottom={4}
+          left="50%"
+          transform="translateX(-50%)"
+        >
+          {user.profilePic ? (
             <>
               <Avatar
                 name={user.name}
                 src={user.profilePic}
                 size={{
-                  base: "md",
-                  md: "xl",
+                  base: "2xl",
+                  md: "2xl",
                 }}
+                boxShadow="0px 7px 30px 10px rgba(1, 2, 3, 1)"
+                borderColor="#1e1e1e"
+                borderWidth="4px"
                 onClick={() => setIsModalOpen(true)}
               />
               <Modal
@@ -86,10 +100,9 @@ const UserHeader = ({ user, posts }) => {
                     />
                   </ModalBody>
                 </ModalContent>
-              </Modal>
+              </Modal>{" "}
             </>
-          )}
-          {!user.profilePic && (
+          ) : (
             <Avatar
               name={user.name}
               src="https://bit.ly/broken-link"
@@ -100,12 +113,25 @@ const UserHeader = ({ user, posts }) => {
             />
           )}
         </Box>
-      </Flex>
+      </Box>
+
+      {/* User's name and username */}
+      <Box textAlign="start">
+        <Text fontSize={"2xl"} fontWeight={"bold"}>
+          {user.name}
+        </Text>
+        <Text fontSize={"sm"}>@{user.username}</Text>
+      </Box>
 
       <Text>{user.bio}</Text>
 
       <Flex gap={3}>
-        <Button size={"sm"}>Use me </Button>
+        <Link href={user.githubLink} isExternal mt={2}>
+          <AiFillGithub />
+        </Link>
+        <Link href={user.xLink || "" } isExternal mt={2}>
+        <FaXTwitter/>
+        </Link>
         {currentUser?._id !== user._id && (
           <Button
             size={"sm"}

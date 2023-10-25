@@ -9,6 +9,8 @@ import {
   useColorModeValue,
   Avatar,
   Center,
+  Text,
+  VStack
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -16,8 +18,6 @@ import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import { Link as RouterLink, useNavigate, Link } from "react-router-dom";
-
-
 
 export default function UpdateProfilePage() {
   const [user, setUser] = useRecoilState(userAtom);
@@ -27,16 +27,20 @@ export default function UpdateProfilePage() {
     email: user.email,
     bio: user.bio,
     password: "",
+    githubLink: user.githubLink || "",
+    xLink: user.xLink || "", 
   });
-  const fileRef = useRef(null);
+  const profileFileRef = useRef(null);
+  const headerFileRef = useRef(null);
   const [updating, setUpdating] = useState(false);
 
   const showToast = useShowToast();
 
-  const { handleImageChange, imgUrl } = usePreviewImg();
+  const { handleImageChange, imgUrl } = usePreviewImg(); // For profile image
+  const { handleImageChange: handleHeaderImageChange, imgUrl: headerImgUrl } =
+    usePreviewImg(); // For header image
 
   const navigate = useNavigate();
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +52,13 @@ export default function UpdateProfilePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
+        body: JSON.stringify({
+          ...inputs,
+          profilePic: imgUrl,
+          headerImage: headerImgUrl,
+          githubLink: inputs.githubLink, // Add this line
+          xLink: inputs.xLink, // Add this line
+        }),
       });
       const data = await res.json(); // updated user object
       if (data.error) {
@@ -90,14 +100,47 @@ export default function UpdateProfilePage() {
                 />
               </Center>
               <Center w="full">
-                <Button w="full" onClick={() => fileRef.current.click()}>
+                <Button w="full" onClick={() => profileFileRef.current.click()}>
                   Change Avatar
                 </Button>
                 <Input
                   type="file"
                   hidden
-                  ref={fileRef}
+                  ref={profileFileRef}
                   onChange={handleImageChange}
+                />
+              </Center>
+            </Stack>
+          </FormControl>
+          <FormControl id="profileHeaderImage">
+            <FormLabel>Profile Header Image</FormLabel>
+            <Stack direction={["column", "row"]} spacing={6}>
+              <Center>
+                <img
+                  src={
+                    headerImgUrl ||
+                    user.headerImage ||
+                    "https://bit.ly/broken-link"
+                  }
+                  alt="Profile Header"
+                  style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                />
+              </Center>
+              <Center w="full" flex={0}>
+                <VStack spacing={2}>
+                  <Button
+                    w="full"
+                    onClick={() => headerFileRef.current.click()}
+                  >
+                    Change Header Image
+                  </Button>
+                  <Text>*please use a wide photo</Text>
+                </VStack>
+                <Input
+                  type="file"
+                  hidden
+                  ref={headerFileRef}
+                  onChange={handleHeaderImageChange}
                 />
               </Center>
             </Stack>
@@ -145,6 +188,30 @@ export default function UpdateProfilePage() {
             />
           </FormControl>
           <FormControl>
+            <FormLabel>GitHub Link</FormLabel>
+            <Input
+              placeholder="https://github.com/yourusername"
+              value={inputs.githubLink}
+              onChange={(e) =>
+                setInputs({ ...inputs, githubLink: e.target.value })
+              }
+              _placeholder={{ color: "gray.500" }}
+              type="url"
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>X Link</FormLabel>
+            <Input
+              placeholder={
+                user.xLink ? user.xLink : "https://x.com/yourusername"
+              }
+              value={inputs.xLink}
+              onChange={(e) => setInputs({ ...inputs, xLink: e.target.value })}
+              _placeholder={{ color: "gray.500" }}
+              type="url"
+            />
+          </FormControl>
+          <FormControl>
             <FormLabel>Password</FormLabel>
             <Input
               placeholder="password"
@@ -179,7 +246,7 @@ export default function UpdateProfilePage() {
               type="submit"
               isLoading={updating}
             >
-              Submit
+              Save
             </Button>
           </Stack>
         </Stack>

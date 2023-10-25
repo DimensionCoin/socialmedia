@@ -7,9 +7,11 @@ import postsAtom from "../atoms/postsAtom";
 import SuggestedUsers from "../components/SuggestedUsers";
 import CreatePost from "../components/CreatePost";
 import AllPost from "../components/AllPost";
+import UserHeader from "../components/UserHeader";
 
 
-const HomePage = () => {
+
+const HomePage = ({}) => {
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [loading, setLoading] = useState(true);
   const showToast = useShowToast();
@@ -53,7 +55,7 @@ const HomePage = () => {
               {" "}
               {/* Added display prop */}
               <SuggestedUsers />
-              <Divider mt={2} borderWidth={"2px"}/>
+              <Divider mt={2} borderWidth={"2px"} />
               <AllPost />
             </Box>
             <Box

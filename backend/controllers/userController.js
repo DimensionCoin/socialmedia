@@ -150,8 +150,8 @@ const followUnFollowUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { name, email, username, password, bio } = req.body;
-  let { profilePic } = req.body;
+  const { name, email, username, password, bio, githubLink, xLink } = req.body; // Extract githubLink
+  let { profilePic, headerImage } = req.body;
 
   const userId = req.user._id;
   try {
@@ -168,6 +168,12 @@ const updateUser = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, salt);
       user.password = hashedPassword;
     }
+     if (githubLink) {
+       user.githubLink = githubLink;
+     }
+     if(xLink) {
+      user.xLink = xLink
+     }
 
     if (profilePic) {
       if (user.profilePic) {
@@ -175,15 +181,27 @@ const updateUser = async (req, res) => {
           user.profilePic.split("/").pop().split(".")[0]
         );
       }
-
       const uploadedResponse = await cloudinary.uploader.upload(profilePic);
       profilePic = uploadedResponse.secure_url;
+      user.profilePic = profilePic;
+    }
+
+    if (headerImage) {
+      if (user.headerImage) {
+        await cloudinary.uploader.destroy(
+          user.headerImage.split("/").pop().split(".")[0]
+        );
+      }
+      const uploadedHeaderResponse = await cloudinary.uploader.upload(
+        headerImage
+      );
+      headerImage = uploadedHeaderResponse.secure_url;
+      user.headerImage = headerImage;
     }
 
     user.name = name || user.name;
     user.email = email || user.email;
     user.username = username || user.username;
-    user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
 
     user = await user.save();

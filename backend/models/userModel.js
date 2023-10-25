@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    headerImage: {
+      type: String,
+      default: "",
+    },
     followers: {
       type: [String],
       default: [],
@@ -34,6 +38,14 @@ const userSchema = mongoose.Schema(
       default: [],
     },
     bio: {
+      type: String,
+      default: "",
+    },
+    githubLink: {
+      type: String,
+      default: "",
+    },
+    xLink: {
       type: String,
       default: "",
     },

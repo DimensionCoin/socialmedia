@@ -30,9 +30,9 @@ const Header = () => {
   return (
     <Flex justifyContent={"space-between"} mt={4} mb="12">
       {user && (
-        <Flex alignItems={"center"} gap={4}>
+        <Flex alignItems={"center"} gap={2}>
           <Link as={RouterLink} to="/">
-            <Image src="/logo.png" alt="logo" w={10} h={10}/>
+            <Image src="/logo1.png" alt="logo" w={16} h={10}/>
           </Link>
           <div onClick={toggleColorMode} style={{ cursor: "pointer" }}>
             {colorMode === "dark" ? (
