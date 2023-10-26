@@ -16,6 +16,7 @@ import { MdOutlineSettings } from "react-icons/md";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import CreatePost from "./BottomBarPost";
 import React, { useState, useEffect, useRef } from "react";
+import { useSocket } from "../context/SocketContext";
 
 const Bottombar = () => {
   const user = useRecoilValue(userAtom);

@@ -12,6 +12,7 @@ export const useSocket = () => {
 export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false); // New state
   const user = useRecoilValue(userAtom);
 
   useEffect(() => {
@@ -26,12 +27,20 @@ export const SocketContextProvider = ({ children }) => {
     socket.on("getOnlineUsers", (users) => {
       setOnlineUsers(users);
     });
+
+    socket.on("unreadMessage", () => {
+      setHasUnreadMessages(true);
+    });
+
     return () => socket && socket.close();
   }, [user?._id]);
 
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers }}>
+    <SocketContext.Provider
+      value={{ socket, onlineUsers, hasUnreadMessages, setHasUnreadMessages }}
+    >
       {children}
     </SocketContext.Provider>
   );
 };
+
