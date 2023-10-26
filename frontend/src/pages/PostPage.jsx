@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Actions from "../components/Actions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; 
 import Comment from "../components/Comment";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import useShowToast from "../hooks/useShowToast";
@@ -21,7 +21,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import postsAtom from "../atoms/postsAtom";
 import Linkify from "react-linkify";
 import CustomLink from "../components/CustomLink";
-
+import { FaUserCircle } from "react-icons/fa";
 
 const PostPage = () => {
   const { user, loading } = useGetUserProfile();
@@ -33,10 +33,30 @@ const PostPage = () => {
 
   const currentPost = posts[0];
 
+  const [originalPoster, setOriginalPoster] = useState(null);
 
   const handleprofile = () => {
     navigate(`/${user.username}`);
   };
+
+  useEffect(() => {
+    const getOriginalPoster = async () => {
+      if (!currentPost || !currentPost.repostOf) return; // Check if currentPost exists and has repostOf property
+
+      try {
+        const originalPost = await fetch(`/api/posts/` + currentPost.repostOf);
+        const postData = await originalPost.json();
+        const res = await fetch(`/api/users/profile/` + postData.postedBy);
+        const userData = await res.json();
+        setOriginalPoster(userData);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+        setOriginalPoster(null);
+      }
+    };
+
+    getOriginalPoster();
+  }, [currentPost, showToast]);
 
   useEffect(() => {
     const getPost = async () => {
@@ -60,7 +80,7 @@ const PostPage = () => {
     try {
       if (!window.confirm("Are you sure you want to delete this post?")) return;
 
-      const res = await fetch(`${API_BASE_URL}/api/posts/${currentPost._id}`, {
+      const res = await fetch(`/api/posts/${currentPost._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -88,80 +108,108 @@ const PostPage = () => {
 
   return (
     <>
-      <Flex>
-        <Flex w={"full"} alignItems={"center"} gap={3}>
-          <Avatar
-            src={user.profilePic}
-            size={"md"}
-            name="user"
-            onClick={handleprofile}
-            
-          />
-          <Flex>
-            <Text fontSize={"sm"} fontWeight={"bold"} >
-              {user.username}
+      {currentPost && (
+        <Flex
+          gap={3}
+          mb={4}
+          p={3}
+          py={5}
+          mt={2}
+        >
+          <Flex flexDirection={"column"} alignItems={"center"}>
+            <Avatar
+              src={user.profilePic}
+              size={"md"}
+              name={user.name}
+              onClick={handleprofile}
+            />
+            <Box w="1px" h={"full"} bg="gray.light" my={2}></Box>
+          </Flex>
+          <Flex flex={1} flexDirection={"column"} gap={2}>
+            <Flex justifyContent={"space-between"} w={"full"}>
+              <Flex w={"full"} alignItems={"center"}>
+                <Text
+                  fontSize={"sm"}
+                  fontWeight={"bold"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/${user.username}`);
+                  }}
+                >
+                  {user.username}
+                </Text>
+                <Image src="/verified.png" w={4} h={4} ml={1} />
+              </Flex>
+              {currentUser?._id === user._id && (
+                <DeleteIcon size={20} onClick={handleDeletePost} />
+              )}
+            </Flex>
+            {currentPost.repostOf && originalPoster && (
+              <Box mb={3}>
+                {/* Repost Text */}
+                <Text mb={2} w="full">
+                  {currentPost.repostText}
+                </Text>
+
+                {/* Original Poster's Info */}
+                <Flex alignItems="center" gap={3}>
+                  {originalPoster.profilePic ? (
+                    <Image
+                      src={originalPoster.profilePic}
+                      alt={`${originalPoster.username}'s profile`}
+                      boxSize="20px"
+                      borderRadius="full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/${originalPoster.username}`);
+                      }}
+                    />
+                  ) : (
+                    <FaUserCircle
+                      size="20"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/${originalPoster.username}`);
+                      }}
+                    />
+                  )}
+                  {/* Original Poster's Username */}
+                  <Text fontSize={"xs"} color={"gray.light"}>
+                    Repost from: <span>@{originalPoster.username}</span>
+                  </Text>
+                </Flex>
+              </Box>
+            )}
+
+            <Text fontSize={"sm"}>
+              <Linkify
+                componentDecorator={(decoratedHref, decoratedText, key) => (
+                  <CustomLink key={key} href={decoratedHref}>
+                    {decoratedText}
+                  </CustomLink>
+                )}
+              >
+                {currentPost.text}
+              </Linkify>
             </Text>
-            <Image src="/verified.png" w="4" h={4} ml={4} />
+            {currentPost.img && (
+              <Box
+                borderRadius={6}
+                overflow={"hidden"}
+                border={"1px solid"}
+                borderColor={"gray.light"}
+              >
+                <Image src={currentPost.img} w={"full"} />
+              </Box>
+            )}
+
+            <Flex gap={3} my={1}>
+              <Actions post={currentPost} />
+            </Flex>
           </Flex>
         </Flex>
-        <Flex gap={4} alignItems={"center"}>
-          <Text
-            fontSize={"xs"}
-            width={36}
-            textAlign={"right"}
-            color={"gray.light"}
-          >
-            {formatDistanceToNow(new Date(currentPost.createdAt))} ago
-          </Text>
-
-          {currentUser?._id === user._id && (
-            <DeleteIcon
-              size={20}
-              cursor={"pointer"}
-              onClick={handleDeletePost}
-            />
-          )}
-        </Flex>
-      </Flex>
-
-      <Text fontSize={"md"} mt={6} mb={2}>
-        <Linkify
-          componentDecorator={(decoratedHref, decoratedText, key) => (
-            <CustomLink key={key} href={decoratedHref}>
-              {decoratedText}
-            </CustomLink>
-          )}
-        >
-          {currentPost.text}
-        </Linkify>
-      </Text>
-
-      {currentPost.img && (
-        <Box
-          borderRadius={6}
-          overflow={"hidden"}
-          border={"1px solid"}
-          borderColor={"gray.light"}
-        >
-          <Image src={currentPost.img} w={"full"} />
-        </Box>
       )}
 
-      <Flex gap={3} my={3}>
-        <Actions post={currentPost} />
-      </Flex>
-
-      {/*<Divider my={4} />
-
-      <Flex justifyContent={"space-between"}>
-        <Flex gap={2} alignItems={"center"}>
-          <Text fontSize={"2xl"}>👋</Text>
-          <Text color={"gray.light"}>Get the app to like, reply and post.</Text>
-        </Flex>
-        <Button>Get</Button>
-      </Flex>
-
-      <Divider my={4} />*/}
       {currentPost.replies.map((reply) => (
         <Comment
           key={reply._id}

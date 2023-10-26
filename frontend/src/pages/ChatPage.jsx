@@ -43,6 +43,8 @@ const ChatPage = () => {
   const showToast = useShowToast();
   const { socket, onlineUsers } = useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showAllConversations, setShowAllConversations] = useState(false);
+
 
 
 
@@ -163,7 +165,10 @@ const ChatPage = () => {
       >
         <Button
           size={"sm"}
-          onClick={onOpen}
+          onClick={() => {
+            onOpen();
+            setShowAllConversations(!showAllConversations);
+          }}
           display={{ base: "block", md: "none" }}
           width={40}
         >
@@ -212,21 +217,41 @@ const ChatPage = () => {
                 ))}
 
               {!loadingConversations &&
-                conversations.map((conversation) => (
-                  <Box onClick={onClose} mt={2}>
-                    <Conversation
-                      key={conversation._id}
-                      isOnline={onlineUsers.includes(
-                        conversation.participants[0]._id
-                      )}
-                      conversation={conversation}
-                    />
-                  </Box>
-                ))}
+                conversations
+                  .slice(0, showAllConversations ? conversations.length : 3)
+                  .map((conversation) => (
+                    <Box onClick={onClose} mt={2}>
+                      <Conversation
+                        key={conversation._id}
+                        isOnline={onlineUsers.includes(
+                          conversation.participants[0]._id
+                        )}
+                        conversation={conversation}
+                      />
+                    </Box>
+                  ))}
             </ModalBody>
             <ModalFooter></ModalFooter>
           </ModalContent>
         </Modal>
+        {!loadingConversations && (
+          <Box display={{ base: "block", md: "none" }}>
+            {conversations
+              .slice(0, showAllConversations ? conversations.length : 1)
+              .map((conversation) => (
+                <Box mt={2}>
+                  <Conversation
+                    key={conversation._id}
+                    isOnline={onlineUsers.includes(
+                      conversation.participants[0]._id
+                    )}
+                    conversation={conversation}
+                  />
+                </Box>
+              ))}
+          </Box>
+        )}
+
         <Flex
           flex={30}
           gap={2}

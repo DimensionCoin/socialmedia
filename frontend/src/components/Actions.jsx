@@ -12,6 +12,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  Image,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -29,11 +30,15 @@ const Actions = ({ post }) => {
   const [isLiking, setIsLiking] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [reply, setReply] = useState("");
-
+  const [isReposting, setIsReposting] = useState(false);
+  const [repostText, setRepostText] = useState("");
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-
+  const {
+    isOpen: isRepostOpen,
+    onOpen: onRepostOpen,
+    onClose: onRepostClose,
+  } = useDisclosure();
 
   const handleLikeAndUnlike = async (e) => {
     e.stopPropagation();
@@ -121,7 +126,12 @@ const Actions = ({ post }) => {
     }
   };
 
-  const handleRepost = async () => {
+  const openRepostModal = (e) => {
+    e.stopPropagation();
+    onRepostOpen();
+  };
+
+  const submitRepost = async () => {
     if (!user)
       return showToast(
         "Error",
@@ -134,6 +144,7 @@ const Actions = ({ post }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ repostText: repostText }), // Include the repostText in the request body
       });
       const data = await res.json();
       if (data.error) return showToast("Error", data.error, "error");
@@ -142,6 +153,8 @@ const Actions = ({ post }) => {
       setPosts(updatedPosts);
 
       showToast("Success", "Post reposted successfully", "success");
+      onRepostClose(); // Close the modal after reposting
+      setRepostText(""); // Clear the repost text
     } catch (error) {
       showToast("Error", error.message, "error");
     }
@@ -189,12 +202,7 @@ const Actions = ({ post }) => {
             strokeWidth="2"
           ></path>
         </svg>
-        <RepostSVG
-          handleRepost={(e) => {
-            e.stopPropagation();
-            handleRepost();
-          }}
-        />{" "}
+        <RepostSVG handleRepost={openRepostModal} />
         <ShareSVG />
       </Flex>
 
@@ -241,6 +249,40 @@ const Actions = ({ post }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Modal isOpen={isRepostOpen} onClose={onRepostClose}>
+        <ModalOverlay />
+        <ModalContent bg="black" color="white">
+          <ModalHeader size={2}>Repost with your thoughts</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <Input
+                placeholder="Add your thoughts here..."
+                value={repostText}
+                onChange={(e) => setRepostText(e.target.value)}
+                colorScheme={"white"}
+              />
+            </FormControl>
+            <Box mt={4}>
+              <Text>{post.text}</Text>
+              {post.img && <Image src={post.img} alt="Reposted content" />}
+              {/* Add other post details if needed */}
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="gray"
+              size={"sm"}
+              mr={3}
+              isLoading={isReposting}
+              onClick={submitRepost} // Use the submitRepost function here
+            >
+              Repost
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 };
@@ -257,7 +299,7 @@ const RepostSVG = ({ handleRepost }) => {
       role="img"
       viewBox="0 0 24 24"
       width="20"
-      onClick={handleRepost} // <-- Add this line
+      onClick={handleRepost} // Open the repost modal
     >
       <title>Repost</title>
       <path

@@ -78,6 +78,13 @@ const deletePost = async (req, res) => {
       await cloudinary.uploader.destroy(videoId, { resource_type: "video" });
     }
 
+    // If the post is a repost, decrement the repostCount of the original post
+    if (post.repostOf) {
+      await Post.findByIdAndUpdate(post.repostOf, {
+        $inc: { repostCount: -1 },
+      });
+    }
+
     await Post.findByIdAndDelete(req.params.id);
 
     await Post.deleteMany({ repostOf: req.params.id });
@@ -87,6 +94,7 @@ const deletePost = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 const likeUnlikePost = async (req, res) => {
   try {
@@ -195,6 +203,7 @@ const repostPost = async (req, res) => {
   try {
     const originalPostId = req.params.id;
     const userId = req.user._id;
+    const { repostText } = req.body; // Get the repostText from the request body
 
     // Check if post exists
     const originalPost = await Post.findById(originalPostId);
@@ -221,6 +230,7 @@ const repostPost = async (req, res) => {
       repostOf: originalPost._id,
       repostedBy: userId,
       originalPosterProfileImg: originalPosterProfileImg,
+      repostText: repostText, // Save the repostText
     });
 
     await Post.findByIdAndUpdate(originalPostId, { $inc: { repostCount: 1 } });

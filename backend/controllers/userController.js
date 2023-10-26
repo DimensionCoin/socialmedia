@@ -1,5 +1,7 @@
 import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
+import Message from "../models/messageModel.js";
+import Conversation from "../models/conversationModel.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js";
 import { v2 as cloudinary } from "cloudinary";
@@ -339,6 +341,18 @@ const deleteUser = async (req, res) => {
       }
     }
 
+    if (user.headerImage && typeof user.headerImage === "string") {
+      try {
+        const cloudinaryPublicId = user.headerImage
+          .split("/")
+          .pop()
+          .split(".")[0];
+        await cloudinary.uploader.destroy(cloudinaryPublicId);
+      } catch (cloudinaryError) {
+        console.error("Error deleting image from Cloudinary:", cloudinaryError);
+      }
+    }
+
     // Find all posts by the user
     const userPosts = await Post.find({ postedBy: userId });
 
@@ -361,6 +375,40 @@ const deleteUser = async (req, res) => {
 
     // Delete all posts by the user
     await Post.deleteMany({ postedBy: userId });
+
+    // Fetch all messages associated with the user
+    const userMessages = await Message.find({ sender: userId });
+
+    // For each message, check if it has an image and delete it from Cloudinary
+    for (let message of userMessages) {
+      if (message.img && typeof message.img === "string") {
+        const imgId = message.img.split("/").pop().split(".")[0];
+        console.log("Attempting to delete Cloudinary ID:", imgId); // Log the ID
+        try {
+          await cloudinary.uploader.destroy(imgId);
+          console.log("Successfully deleted Cloudinary ID:", imgId);
+        } catch (cloudinaryError) {
+          console.error(
+            "Error deleting message image from Cloudinary:",
+            cloudinaryError
+          );
+        }
+      }
+    }
+
+    await Message.deleteMany({ sender: userId });
+
+    await Conversation.deleteMany({ participants: userId });
+
+    await User.updateMany(
+      { followers: userId },
+      { $pull: { followers: userId } }
+    );
+
+    await User.updateMany(
+      { following: userId },
+      { $pull: { following: userId } }
+    );
 
     // Remove user's posts that are reposted by others
     await Post.updateMany(

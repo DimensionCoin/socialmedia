@@ -176,38 +176,37 @@ const Post = ({ post, postedBy }) => {
           </Flex>
         </Flex>
         {post.repostOf && originalPoster && (
-          <Flex alignItems="center" gap={3} mb={3}>
-            <Flex
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/${originalPoster.username}/post/${post._id}`);
-              }}
-            >
+          <Box mb={3}>
+            {/* Repost Text */}
+            <Text mb={2}>{post.repostText}</Text>
+
+            {/* Original Poster's Info */}
+            <Flex alignItems="center" gap={3}>
+              {/* Original Poster's Username */}
               <Text fontSize={"xs"} color={"gray.light"}>
                 Repost from: <span>@{originalPoster.username}</span>
               </Text>
-            </Flex>
-            {originalPoster.profilePic ? (
+
+              {/* Original Poster's Profile Pic */}
               <Flex
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate(`/${originalPoster.username}`);
                 }}
               >
-                {" "}
-                <Image
-                  src={originalPoster.profilePic}
-                  alt={`${originalPoster.username}'s profile`}
-                  boxSize="20px"
-                  borderRadius="full"
-                />
+                {originalPoster.profilePic ? (
+                  <Image
+                    src={originalPoster.profilePic}
+                    alt={`${originalPoster.username}'s profile`}
+                    boxSize="20px"
+                    borderRadius="full"
+                  />
+                ) : (
+                  <FaUserCircle size="20" />
+                )}
               </Flex>
-            ) : (
-              <Flex>
-                <FaUserCircle size="20" />
-              </Flex>
-            )}
-          </Flex>
+            </Flex>
+          </Box>
         )}
 
         <Text fontSize={"sm"}>
@@ -256,7 +255,7 @@ const Post = ({ post, postedBy }) => {
                     width="100%"
                     height="100%"
                     onClick={() => {
-                      console.log("Image clicked!"); 
+                      console.log("Image clicked!");
                       setIsModalOpen(false);
                     }}
                   >

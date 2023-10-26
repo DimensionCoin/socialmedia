@@ -1,13 +1,14 @@
-import React from 'react'
-import AllPost from '../components/AllPost'
-import SuggestedPost from "../components/SuggestedPost"
+import React from "react";
+import AllPost from "../components/AllPost";
+import SuggestedUsers from "../components/SuggestedUsers";
 
 const ExplorePage = () => {
   return (
     <div>
-        <AllPost/>
+      <SuggestedUsers />
+      <AllPost />
     </div>
-  )
-}
+  );
+};
 
-export default ExplorePage
+export default ExplorePage;

@@ -58,6 +58,10 @@ const postSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    repostText: {
+      type: String,
+      maxLength: 10000,
+    },
   },
   {
     timestamps: true,

@@ -4,6 +4,7 @@ import {
   useTheme,
   Link,
   Flex,
+  Badge,
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
@@ -21,6 +22,31 @@ const Bottombar = () => {
   const displayValue = useBreakpointValue({ base: "block", md: "none" });
   const [isVisible, setIsVisible] = useState(true);
   const timeoutId = useRef(null);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+
+    useEffect(() => {
+      // Fetch conversations for the logged-in user
+      const fetchConversations = async () => {
+        try {
+          const response = await fetch(`/api/messages/conversations`, {
+            headers: {
+              Authorization: `Bearer ${user.token}`, // Assuming you store the token in the user object
+            },
+          });
+          const conversations = await response.json();
+
+          // Check if any conversation has the 'seen' property set to false
+          const unread = conversations.some(
+            (conversation) => !conversation.lastMessage.seen
+          );
+          setHasUnreadMessages(unread);
+        } catch (error) {
+          console.error("Failed to fetch conversations:", error);
+        }
+      };
+
+      fetchConversations();
+    }, [user]);
 
   // This useEffect will handle window-wide activity (scroll and click)
   useEffect(() => {
@@ -97,12 +123,23 @@ const Bottombar = () => {
           <RxAvatar size={24} />
         </Link>
         <Box boxSize="50px">
-          {" "}
           {/* Adjust this to make the CreatePost larger */}
           <CreatePost />
         </Box>
-        <Link as={RouterLink} to={`/chat`}>
+        <Link as={RouterLink} to={`/chat`} position="relative">
           <BsFillChatQuoteFill size={20} />
+          {hasUnreadMessages && (
+            <Badge
+              position="absolute"
+              top="-6px"
+              right="-8px"
+              borderRadius="100%"
+              w="16px"
+              h="16px"
+              bg="red.500"
+              border="2px solid white"
+            ></Badge>
+          )}
         </Link>
         <Link as={RouterLink} to={`/settings`}>
           <MdOutlineSettings size={20} />
