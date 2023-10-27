@@ -24,30 +24,43 @@ const Bottombar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const timeoutId = useRef(null);
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  const socket = useSocket();
 
-    useEffect(() => {
-      // Fetch conversations for the logged-in user
-      const fetchConversations = async () => {
-        try {
-          const response = await fetch(`/api/messages/conversations`, {
-            headers: {
-              Authorization: `Bearer ${user.token}`, // Assuming you store the token in the user object
-            },
-          });
-          const conversations = await response.json();
+  useEffect(() => {
+    // Fetch conversations for the logged-in user
+    const fetchConversations = async () => {
+      try {
+        const response = await fetch(`/api/messages/conversations`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`, // Assuming you store the token in the user object
+          },
+        });
+        const conversations = await response.json();
 
-          // Check if any conversation has the 'seen' property set to false
-          const unread = conversations.some(
-            (conversation) => !conversation.lastMessage.seen
-          );
-          setHasUnreadMessages(unread);
-        } catch (error) {
-          console.error("Failed to fetch conversations:", error);
-        }
+        // Check if any conversation has the 'seen' property set to false
+        const unread = conversations.some(
+          (conversation) => !conversation.lastMessage.seen
+        );
+        setHasUnreadMessages(unread);
+      } catch (error) {
+        console.error("Failed to fetch conversations:", error);
+      }
+    };
+
+    fetchConversations();
+
+    // If socket is available, listen for the unreadMessage event
+    if (socket && typeof socket.on === "function") {
+      socket.on("unreadMessage", () => {
+        setHasUnreadMessages(true);
+      });
+
+      // Cleanup the listener when the component is unmounted or when the socket changes
+      return () => {
+        socket.off("unreadMessage");
       };
-
-      fetchConversations();
-    }, [user]);
+    }
+  }, [user, socket]);
 
   // This useEffect will handle window-wide activity (scroll and click)
   useEffect(() => {

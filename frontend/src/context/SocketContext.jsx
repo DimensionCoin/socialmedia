@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import io from "socket.io-client";
 import userAtom from "../atoms/userAtom";
+import Header from "../components/Header";
+import Bottombar from "../components/Bottombar";
 
 const SocketContext = createContext();
 
@@ -40,6 +42,7 @@ export const SocketContextProvider = ({ children }) => {
       value={{ socket, onlineUsers, hasUnreadMessages, setHasUnreadMessages }}
     >
       {children}
+  
     </SocketContext.Provider>
   );
 };
