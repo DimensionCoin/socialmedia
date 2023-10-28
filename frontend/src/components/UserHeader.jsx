@@ -21,6 +21,7 @@ import { useState } from "react";
 import {AiFillGithub} from "react-icons/ai"
 import {FaXTwitter} from "react-icons/fa6"
 import { FaDonate } from "react-icons/fa";
+import CreateCommunity from "./CreateCommunity";
 
 const UserHeader = ({ user, posts }) => {
   const toast = useToast();
@@ -165,25 +166,8 @@ const UserHeader = ({ user, posts }) => {
           </Link>
         </Flex>
         <Flex>
-          <Box className="icon-container">
-            <Menu>
-              <MenuButton>
-                <BsQrCode size={24} cursor={"pointer"} />
-              </MenuButton>
-              <Portal>
-                <MenuList bg={"gray.dark"} boxSize={60} p={0}>
-                  <MenuItem
-                    bg={"gray.dark"}
-                    onClick={() => setShowQRCode(true)}
-                    p={0}
-                  >
-                    <Flex position="relative" w="100%" h="100%">
-                      <QRCode value={window.location.href} size={235} />
-                    </Flex>
-                  </MenuItem>
-                </MenuList>
-              </Portal>
-            </Menu>
+          <Box borderRadius={"full"}>
+            <CreateCommunity/>
           </Box>
           <Box className="icon-container">
             <Menu>

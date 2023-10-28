@@ -6,9 +6,9 @@ import mongoose from "mongoose";
 
 const createCommunity = async (req, res) => {
   try {
-    const { name, description, coverImage, bio } = req.body;
-    const existingCommunity = await Community.findOne({ name });
+    const { name, description, coverImage, bio, profileImage } = req.body; 
 
+    const existingCommunity = await Community.findOne({ name });
     if (existingCommunity) {
       return res.status(400).json({ error: "Community already exists" });
     }
@@ -18,6 +18,7 @@ const createCommunity = async (req, res) => {
       description,
       bio,
       coverImage,
+      profileImage, 
       admins: [req.user._id],
     });
 
@@ -27,6 +28,7 @@ const createCommunity = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 const addOrRemoveAdmin = async (req, res) => {
   try {
