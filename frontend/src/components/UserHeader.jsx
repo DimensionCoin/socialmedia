@@ -21,7 +21,6 @@ import { useState } from "react";
 import {AiFillGithub} from "react-icons/ai"
 import {FaXTwitter} from "react-icons/fa6"
 import { FaDonate } from "react-icons/fa";
-import CreateCommunity from "./CreateCommunity";
 
 const UserHeader = ({ user, posts }) => {
   const toast = useToast();
@@ -166,9 +165,6 @@ const UserHeader = ({ user, posts }) => {
           </Link>
         </Flex>
         <Flex>
-          <Box borderRadius={"full"}>
-            <CreateCommunity/>
-          </Box>
           <Box className="icon-container">
             <Menu>
               <MenuButton>

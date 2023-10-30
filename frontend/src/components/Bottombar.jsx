@@ -1,7 +1,7 @@
 import {
   Box,
   useBreakpointValue,
-  useTheme,
+  Text,
   Link,
   Flex,
   Badge,
@@ -13,7 +13,7 @@ import { RxAvatar } from "react-icons/rx";
 import { Link as RouterLink } from "react-router-dom";
 import { BsFillChatQuoteFill } from "react-icons/bs";
 import { MdOutlineSettings } from "react-icons/md";
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaUserGroup } from "react-icons/fa6";
 import CreatePost from "./BottomBarPost";
 import React, { useState, useEffect, useRef } from "react";
 import { useSocket } from "../context/SocketContext";
@@ -130,18 +130,42 @@ const Bottombar = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Link as={RouterLink} to={"/explore"}>
-          <FaMagnifyingGlass size={20} />
+        <Link
+          as={RouterLink}
+          to={"/communities"}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <FaUserGroup size={20} />
+          <Text fontSize={"xs"} mt={1}>Communities</Text>
         </Link>
-        <Link as={RouterLink} to={`/${user.username}`}>
+        <Link
+          as={RouterLink}
+          to={`/${user.username}`}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <RxAvatar size={24} />
+          <Text fontSize={"xs"} mt={1}>User</Text>
         </Link>
-        <Box boxSize="50px">
-          {/* Adjust this to make the CreatePost larger */}
+        <Box boxSize="44px">
           <CreatePost />
+          
         </Box>
-        <Link as={RouterLink} to={`/chat`} position="relative">
+        <Link
+        as={RouterLink}
+        to={"/chat"}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <BsFillChatQuoteFill size={20} />
+          <Text fontSize={"xs"} mt={1}>Chat</Text>
           {hasUnreadMessages && (
             <Badge
               position="absolute"
@@ -155,8 +179,16 @@ const Bottombar = () => {
             ></Badge>
           )}
         </Link>
-        <Link as={RouterLink} to={`/settings`}>
+        <Link
+          as={RouterLink}
+          to={`/settings`}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <MdOutlineSettings size={20} />
+          <Text fontSize={"xs"} mt={1}>Settings</Text>
         </Link>
       </Flex>
     </Box>

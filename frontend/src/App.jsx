@@ -16,13 +16,15 @@ import Following from "./pages/Following";
 import { SocketContextProvider } from "./context/SocketContext";
 import Header from "./components/Header";
 import Bottombar from "./components/Bottombar";
+import CommunitiesPage from "./pages/CommunitiesPage";
+import CommunityPage from "./pages/CommunityPage";
 function App() {
   const user = useRecoilValue(userAtom);
   const { pathname } = useLocation();
   return (
     <SocketContextProvider>
       <Box position={"relative"} w="full">
-        <Header/>
+        <Header />
         <Container
           maxW={pathname === "/" ? { base: "650px", md: "1000px" } : "900"}
         >
@@ -75,9 +77,17 @@ function App() {
               path="/explore"
               element={user ? <ExplorePage /> : <Navigate to={"/auth"} />}
             />
+            <Route
+              path="/communities"
+              element={user ? <CommunitiesPage /> : <Navigate to={"/auth"} />}
+            />
+            <Route
+              path="/community/:id"
+              element={user ? <CommunityPage /> : <Navigate to={"/auth"} />}
+            />
           </Routes>
         </Container>
-        <Bottombar/>
+        <Bottombar />
       </Box>
     </SocketContextProvider>
   );

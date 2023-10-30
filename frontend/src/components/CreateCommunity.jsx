@@ -1,4 +1,4 @@
-import { MdGroups } from "react-icons/md";
+import { FaPeopleGroup, FaPlus } from "react-icons/fa6";
 import {
   Button,
   Flex,
@@ -17,7 +17,9 @@ import {
   Avatar,
   VStack,
   Center,
-  ModalHeader
+  ModalHeader,
+  Box,
+  HStack
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -78,15 +80,40 @@ const CreateCommunity = () => {
 
  return (
    <>
-     <Button
-       position={"center"}
-       bg={useColorModeValue("gray.300", "gray.dark")}
-       onClick={onOpen}
-       size={{ base: "sm", sm: "sm" }}
-       mt={1}
+     <Box
+       position="relative"
+       _hover={{ ".overlay-icon": { opacity: 1 } }} // <-- Add hover effect
      >
-       <MdGroups />
-     </Button>
+       <Button
+         position={"center"}
+         bg={useColorModeValue("gray.300", "gray.dark")}
+         onClick={onOpen}
+         size={{ base: "xl", sm: "md" }}
+      
+       >
+         <VStack>
+           <FaPeopleGroup />
+          
+         </VStack>
+       </Button>
+       <Flex
+         
+         top="0"
+         right="0"
+         p="1"
+         className="overlay-icon" // <-- Add class for hover target
+         opacity="0"
+         alignItems="center"
+         justifyContent="center"
+         rounded="full"
+         bg="gray.500"
+         w="1rem"
+         h="1rem"
+         
+       >
+         <FaPlus color="white" size="0.6rem" />
+       </Flex>
+     </Box>
 
      <form onSubmit={handleSubmit}>
        <Modal isOpen={isOpen} onClose={onClose}>

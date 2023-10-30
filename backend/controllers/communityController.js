@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 const createCommunity = async (req, res) => {
   try {
-    const { name, description, coverImage, bio, profileImage } = req.body; 
+    const { name, description, coverImage, bio, profileImage } = req.body;
 
     const existingCommunity = await Community.findOne({ name });
     if (existingCommunity) {
@@ -18,7 +18,7 @@ const createCommunity = async (req, res) => {
       description,
       bio,
       coverImage,
-      profileImage, 
+      profileImage,
       admins: [req.user._id],
     });
 
@@ -28,7 +28,6 @@ const createCommunity = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 const addOrRemoveAdmin = async (req, res) => {
   try {
@@ -400,6 +399,48 @@ const dislikeReply = async (req, res) => {
   }
 };
 
+const getAllCommunities = async (req, res) => {
+  try {
+    const communities = await Community.find();
+    if (communities.length === 0) {
+      return res.status(404).json({ message: "No communities found" });
+    }
+    res.status(200).json(communities);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const deleteCommunity = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    const community = await Community.findById(communityId);
+    if (!community) {
+      return res.status(404).json({ error: "Community not found" });
+    }
+    console.log("Community:", community);
+    // Verify if the requester is an admin of the community
+    if (!community.admins.includes(req.user._id)) {
+      return res
+        .status(403)
+        .json({ error: "Only admins can delete the community" });
+    }
+    console.log("Request user:", req.user);
+
+    // Delete all associated posts of the community
+    await CommunityPost.deleteMany({ _id: { $in: community.posts } });
+
+    // Delete the community
+    await Community.findByIdAndDelete(communityId);
+    console.log("Community:", community);
+    console.log("Request user:", req.user);
+
+
+    res.status(200).json({ message: "Community deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 export {
   createCommunity,
@@ -414,4 +455,6 @@ export {
   replyToCommunityPost,
   likeReply,
   dislikeReply,
+  getAllCommunities,
+  deleteCommunity,
 };

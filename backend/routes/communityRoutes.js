@@ -12,6 +12,8 @@ import {
   replyToCommunityPost,
   likeReply,
   dislikeReply,
+  getAllCommunities,
+  deleteCommunity,
 } from "../controllers/communityController.js";
 import protectRoute from "../middlewares/protectRoute.js";
 
@@ -19,6 +21,8 @@ const router = express.Router();
 
 // GET routes
 router.get("/profile/:query", getCommunityProfile);
+router.get("/communities", getAllCommunities);
+
 
 // POST routes
 router.post("/create-community", protectRoute, createCommunity);
@@ -34,5 +38,8 @@ router.put("/community-post/:id/like", protectRoute, likeCommunityPost); // Rout
 router.put("/community-post/:id/dislike", protectRoute, dislikeCommunityPost); // Route to dislike a community post
 router.put("/community-post/:postId/reply/:replyId/like", protectRoute, likeReply); // Route to like a reply
 router.put("/community-post/:postId/reply/:replyId/dislike", protectRoute, dislikeReply); // Route to dislike a reply
+
+router.delete("/deleteCommunity/:communityId",protectRoute, deleteCommunity);
+
 
 export default router;
