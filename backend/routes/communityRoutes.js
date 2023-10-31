@@ -14,6 +14,9 @@ import {
   dislikeReply,
   getAllCommunities,
   deleteCommunity,
+  getCommunityPosts,
+  getPostReplies,
+  getSpecificPostInCommunity
 } from "../controllers/communityController.js";
 import protectRoute from "../middlewares/protectRoute.js";
 
@@ -22,6 +25,11 @@ const router = express.Router();
 // GET routes
 router.get("/profile/:query", getCommunityProfile);
 router.get("/communities", getAllCommunities);
+router.get("/:communityId/posts", getCommunityPosts);
+router.get("/post/:postId/replies", getPostReplies);
+router.get("/:communityId/post/:postId", getSpecificPostInCommunity);
+
+
 
 
 // POST routes

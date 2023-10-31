@@ -2,12 +2,17 @@ import mongoose from "mongoose";
 
 const communityPostSchema = new mongoose.Schema(
   {
+    postedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     text: {
       type: String,
       required: true,
       maxLength: 5000,
     },
-    image: {
+    img: {
       type: String,
       default: "",
     },

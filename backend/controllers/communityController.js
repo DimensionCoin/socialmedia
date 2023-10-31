@@ -194,6 +194,8 @@ const joinOrLeaveCommunity = async (req, res) => {
 };
 
 const createCommunityPost = async (req, res) => {
+    console.log(req.body);
+
   try {
     const { communityId, text } = req.body;
     let { img } = req.body;
@@ -256,20 +258,21 @@ const likeCommunityPost = async (req, res) => {
     }
 
     const userLikedPost = post.likes.includes(userId);
+    const userDislikedPost = post.dislikes.includes(userId);
 
     if (userLikedPost) {
-      // Unlike post
-      await CommunityPost.updateOne(
-        { _id: postId },
-        { $pull: { likes: userId } }
-      );
+      post.likes.pull(userId);
       res.status(200).json({ message: "Community post unliked successfully" });
-    } else {
-      // Like post
+    } else if (userDislikedPost) {
+      post.dislikes.pull(userId);
+    }
+    // You can safely add the like after checking both conditions above
+    if (!userLikedPost) {
       post.likes.push(userId);
-      await post.save();
       res.status(200).json({ message: "Community post liked successfully" });
     }
+
+    await post.save();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -286,23 +289,24 @@ const dislikeCommunityPost = async (req, res) => {
       return res.status(404).json({ error: "Community post not found" });
     }
 
+    const userLikedPost = post.likes.includes(userId);
     const userDislikedPost = post.dislikes.includes(userId);
 
     if (userDislikedPost) {
-      // Remove dislike
-      await CommunityPost.updateOne(
-        { _id: postId },
-        { $pull: { dislikes: userId } }
-      );
+      post.dislikes.pull(userId);
       res
         .status(200)
         .json({ message: "Dislike removed from community post successfully" });
-    } else {
-      // Add dislike
+    } else if (userLikedPost) {
+      post.likes.pull(userId);
+    }
+    // You can safely add the dislike after checking both conditions above
+    if (!userDislikedPost) {
       post.dislikes.push(userId);
-      await post.save();
       res.status(200).json({ message: "Community post disliked successfully" });
     }
+
+    await post.save();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -442,6 +446,79 @@ const deleteCommunity = async (req, res) => {
   }
 };
 
+const getCommunityPosts = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(communityId)) {
+      return res.status(400).json({ error: "Invalid community ID" });
+    }
+
+    const community = await Community.findById(communityId);
+    if (!community) {
+      return res.status(404).json({ error: "Community not found" });
+    }
+
+    const posts = await CommunityPost.find({ _id: { $in: community.posts } })
+      .populate("postedBy", "username") // Assuming 'username' is a field in the User model
+      .sort({ createdAt: -1 }); // Sorting in descending order by creation date
+
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getPostReplies = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid post ID" });
+    }
+
+    const post = await CommunityPost.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json(post.replies);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const getSpecificPostInCommunity = async (req, res) => {
+  try {
+    const { communityId, postId } = req.params; // Assuming route is like: /community/:communityId/post/:postId
+
+    // Fetch the community
+    const community = await Community.findById(communityId);
+    if (!community) {
+      return res.status(404).json({ error: "Community not found" });
+    }
+
+    // Check if the community has the post
+    if (!community.posts.includes(postId)) {
+      return res
+        .status(404)
+        .json({ error: "Post not found in this community" });
+    }
+
+    // Fetch the specific post
+    const post = await CommunityPost.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Return the post
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 export {
   createCommunity,
   addOrRemoveAdmin,
@@ -457,4 +534,7 @@ export {
   dislikeReply,
   getAllCommunities,
   deleteCommunity,
+  getCommunityPosts,
+  getPostReplies,
+  getSpecificPostInCommunity,
 };

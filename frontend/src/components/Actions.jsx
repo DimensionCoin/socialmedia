@@ -159,6 +159,7 @@ const Actions = ({ post }) => {
       showToast("Error", error.message, "error");
     }
   };
+  
 
   return (
     <Flex flexDirection="column">

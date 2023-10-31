@@ -26,6 +26,7 @@ import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
+import { AddIcon } from "@chakra-ui/icons";
 
 const CreateCommunity = () => {
  const { isOpen, onOpen, onClose } = useDisclosure();
@@ -80,10 +81,7 @@ const CreateCommunity = () => {
 
  return (
    <>
-     <Box
-       position="relative"
-       _hover={{ ".overlay-icon": { opacity: 1 } }} // <-- Add hover effect
-     >
+   
        <Button
          position={"center"}
          bg={useColorModeValue("gray.300", "gray.dark")}
@@ -92,7 +90,7 @@ const CreateCommunity = () => {
       
        >
          <VStack>
-           <FaPeopleGroup />
+           <AddIcon />
           
          </VStack>
        </Button>
@@ -113,7 +111,7 @@ const CreateCommunity = () => {
        >
          <FaPlus color="white" size="0.6rem" />
        </Flex>
-     </Box>
+
 
      <form onSubmit={handleSubmit}>
        <Modal isOpen={isOpen} onClose={onClose}>

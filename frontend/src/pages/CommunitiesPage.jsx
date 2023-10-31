@@ -8,7 +8,6 @@ import {
   VStack,
   useColorModeValue,
   chakra,
-  
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast";
@@ -46,13 +45,13 @@ const CommunitiesPage = () => {
     fetchCommunities();
   }, [showToast]);
 
-    if (loading) {
-      return (
-        <Flex justifyContent={"center"}>
-          <Spinner size={"xl"} />
-        </Flex>
-      );
-    }
+  if (loading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner size={"xl"} />
+      </Flex>
+    );
+  }
 
   if (!communities.length) {
     return (
@@ -73,8 +72,8 @@ const CommunitiesPage = () => {
     );
   }
 
-  const handleDelete = async (communityId) => {
-    console.log(communityId);
+  const handleDelete = async (event, communityId) => {
+    event.preventDefault();
     try {
       const response = await fetch(
         `/api/community/deleteCommunity/${communityId}`,
@@ -103,8 +102,6 @@ const CommunitiesPage = () => {
     }
   };
 
-  console.log("Current User ID:", currentUser._id);
-
   return (
     <>
       <VStack
@@ -124,7 +121,7 @@ const CommunitiesPage = () => {
             <Box
               key={community._id}
               p={5}
-              w={{ base: "95%", md: "75%" }} // 100% width on smaller screens and 75% on medium and up
+              w={{ base: "340px", md: "700px" }} // 100% width on smaller screens and 75% on medium and up
               h="auto"
               boxShadow="md"
               borderRadius="lg"
@@ -140,7 +137,7 @@ const CommunitiesPage = () => {
                   right="11px"
                   cursor="pointer"
                   zIndex="10"
-                  onClick={() => handleDelete(community._id)}
+                  onClick={(e) => handleDelete(e, community._id)}
                 />
               )}
               <Flex gap={6} alignItems={"center"}>

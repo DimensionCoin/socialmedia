@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Avatar,
   Box,
@@ -7,15 +7,42 @@ import {
   Image,
   Flex,
   Button,
+  FormControl,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Textarea,
+  useColorModeValue,
+  useDisclosure,
+  CloseButton,
+  Divider,
 } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { DeleteIcon } from "@chakra-ui/icons";
+import useShowToast from "../hooks/useShowToast";
+import usePreviewImg from "../hooks/usePreviewImg";
+import { BsFillImageFill } from "react-icons/bs";
+
+const MAX_CHAR = 10000;
 
 const CommunityHeader = ({ communityData }) => {
   const [communities, setCommunities] = useState([]);
   const currentUser = useRecoilValue(userAtom);
   const isMember = communityData.members.includes(currentUser._id);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const showToast = useShowToast();
+  const imageRef = useRef(null);
+  const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
+  const [postText, setPostText] = useState("");
+  const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async (communityId) => {
     console.log(communityId);
@@ -38,7 +65,7 @@ const CommunityHeader = ({ communityData }) => {
 
       // Filter out the deleted community from the state
       setCommunities((prevCommunities) =>
-        prevCommunities.filter((community) => community._id !== communityId)
+        prevCommunities.filter((community) => communityData._id !== communityId)
       );
 
       showToast("Success", "Community deleted successfully", "success");
@@ -113,6 +140,55 @@ const CommunityHeader = ({ communityData }) => {
     }
   };
 
+  const handleTextChange = (e) => {
+    const inputText = e.target.value;
+
+    if (inputText.length > MAX_CHAR) {
+      const truncatedText = inputText.slice(0, MAX_CHAR);
+      setPostText(truncatedText);
+      setRemainingChar(0);
+    } else {
+      setPostText(inputText);
+      setRemainingChar(MAX_CHAR - inputText.length);
+    }
+  };
+
+const handleCreateCommunityPost = async () => {
+  setLoading(true);
+  try {
+    const response = await fetch(`/api/community/community-post`, {
+      // changed 'res' to 'response'
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        communityId: communityData._id,
+        postedBy: currentUser._id,
+        text: postText,
+        img: imgUrl,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      showToast("Error", data.error, "error");
+    } else {
+      showToast("Success", "Post added successfully!", "success");
+      onClose(); // close the modal after successful post
+      setPostText(""); // reset the post text
+      setImgUrl(""); // reset the image URL
+      // Optionally, you can update your local state to reflect the new post, if necessary.
+    }
+  } catch (error) {
+    showToast("Error", error.message, "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   return (
     <VStack gap={4} alignItems={"start"} w={"full"}>
       {/* Display the community cover image */}
@@ -166,13 +242,89 @@ const CommunityHeader = ({ communityData }) => {
           <Text>{communityData.members.length}</Text>
           <Text>Members</Text>
         </Flex>
-        {communityData.admins.includes(currentUser._id) && (
-          <Flex alignItems={"center"} gap={2}>
-            <Button size={"sm"}>Update</Button>
-            <DeleteIcon onClick={() => handleDelete(community._id)} />
-          </Flex>
-        )}
+        <Flex gap={2}>
+          <Button
+            bg={useColorModeValue("gray.300", "gray.dark")}
+            onClick={onOpen}
+            size={{ base: "sm", sm: "md" }}
+          >
+            <AddIcon />
+          </Button>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+
+            <ModalContent bg="gray.dark" color="white">
+              <ModalHeader>Create Community Post</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody pb={6}>
+                <FormControl>
+                  <Textarea
+                    placeholder="Post content goes here.."
+                    onChange={handleTextChange}
+                    value={postText}
+                  />
+                  <Text
+                    fontSize="xs"
+                    fontWeight="bold"
+                    textAlign={"right"}
+                    m={"1"}
+                    color={"gray.800"}
+                  >
+                    {remainingChar}/{MAX_CHAR}
+                  </Text>
+
+                  <Input
+                    type="file"
+                    hidden
+                    ref={imageRef}
+                    onChange={handleImageChange}
+                  />
+
+                  <BsFillImageFill
+                    style={{ marginLeft: "5px", cursor: "pointer" }}
+                    size={16}
+                    onClick={() => imageRef.current.click()}
+                  />
+                </FormControl>
+
+                {imgUrl && (
+                  <Flex mt={5} w={"full"} position={"relative"}>
+                    <Image src={imgUrl} alt="Selected img" />
+                    <CloseButton
+                      onClick={() => {
+                        setImgUrl("");
+                      }}
+                      bg={"gray.800"}
+                      position={"absolute"}
+                      top={2}
+                      right={2}
+                    />
+                  </Flex>
+                )}
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  colorScheme={"gray"}
+                  mr={3}
+                  isLoading={loading}
+                  hover={"white"}
+                  onClick={handleCreateCommunityPost}
+                >
+                  Post
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          {communityData.admins.includes(currentUser._id) && (
+            <Flex alignItems={"center"} gap={2}>
+              <Button size={"sm"}>Update</Button>
+              <DeleteIcon onClick={() => handleDelete(communityData._id)} />
+            </Flex>
+          )}
+        </Flex>
       </Flex>
+      <Divider/>
     </VStack>
   );
 };
