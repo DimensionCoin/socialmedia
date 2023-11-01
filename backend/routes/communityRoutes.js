@@ -16,7 +16,7 @@ import {
   deleteCommunity,
   getCommunityPosts,
   getPostReplies,
-  getSpecificPostInCommunity
+  getSpecificPostInCommunity,
 } from "../controllers/communityController.js";
 import protectRoute from "../middlewares/protectRoute.js";
 
@@ -28,9 +28,6 @@ router.get("/communities", getAllCommunities);
 router.get("/:communityId/posts", getCommunityPosts);
 router.get("/post/:postId/replies", getPostReplies);
 router.get("/:communityId/post/:postId", getSpecificPostInCommunity);
-
-
-
 
 // POST routes
 router.post("/create-community", protectRoute, createCommunity);
@@ -44,10 +41,17 @@ router.put("/moderator/:communityId", protectRoute, addOrRemoveModerator);
 router.put("/update/:communityId", protectRoute, updateCommunityInfo);
 router.put("/community-post/:id/like", protectRoute, likeCommunityPost); // Route to like a community post
 router.put("/community-post/:id/dislike", protectRoute, dislikeCommunityPost); // Route to dislike a community post
-router.put("/community-post/:postId/reply/:replyId/like", protectRoute, likeReply); // Route to like a reply
-router.put("/community-post/:postId/reply/:replyId/dislike", protectRoute, dislikeReply); // Route to dislike a reply
+router.put(
+  "/community-post/:postId/reply/:replyId/like",
+  protectRoute,
+  likeReply
+); // Route to like a reply
+router.put(
+  "/community-post/:postId/reply/:replyId/dislike",
+  protectRoute,
+  dislikeReply
+); // Route to dislike a reply
 
-router.delete("/deleteCommunity/:communityId",protectRoute, deleteCommunity);
-
+router.delete("/deleteCommunity/:communityId", protectRoute, deleteCommunity);
 
 export default router;

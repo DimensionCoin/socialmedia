@@ -29,6 +29,8 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast";
 import usePreviewImg from "../hooks/usePreviewImg";
 import { BsFillImageFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
+
 
 const MAX_CHAR = 10000;
 
@@ -231,7 +233,7 @@ const handleCreateCommunityPost = async () => {
           <Text fontSize={"2xl"} fontWeight={"bold"} mt={3}>
             {communityData.name}
           </Text>
-          <Text>{communityData.bio} bio</Text>
+          <Text>{communityData.bio}</Text>
         </Box>
         <Button onClick={handleJoinOrLeave}>
           {isMember ? "Leave" : "Join"}
@@ -318,13 +320,15 @@ const handleCreateCommunityPost = async () => {
           </Modal>
           {communityData.admins.includes(currentUser._id) && (
             <Flex alignItems={"center"} gap={2}>
-              <Button size={"sm"}>Update</Button>
+              <Link to={`/updateCommunity/${communityData._id}`}>
+                <Button size={"sm"}>Update</Button>
+              </Link>
               <DeleteIcon onClick={() => handleDelete(communityData._id)} />
             </Flex>
           )}
         </Flex>
       </Flex>
-      <Divider/>
+      <Divider />
     </VStack>
   );
 };

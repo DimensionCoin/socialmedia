@@ -29,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import useShowToast from "../hooks/useShowToast";
 
-const CommunityActions = ({ post }) => {
+const CommunityReplyActions = ({ reply, post }) => {
   const currentUser = useRecoilValue(userAtom);
   const [isLiked, setIsLiked] = useState(false); // Example state to track if the post is liked by the user
   const [isDisliked, setIsDisliked] = useState(false); // Example state to track if the post is disliked by the user
@@ -37,17 +37,17 @@ const CommunityActions = ({ post }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [replyText, setReplyText] = useState("");
 
-   useEffect(() => {
-     if (currentUser) {
-       setIsLiked(post.likes.includes(currentUser._id));
-       setIsDisliked(post.dislikes.includes(currentUser._id));
-     }
-   }, [post, currentUser]);
+  useEffect(() => {
+    if (currentUser) {
+      setIsLiked(reply.likes.includes(currentUser._id));
+      setIsDisliked(reply.dislikes.includes(currentUser._id));
+    }
+  }, [reply, currentUser]);
 
   const handleLike = async () => {
     try {
       const response = await fetch(
-        `/api/community/community-post/${post._id}/like`,
+        `/api/community/community-post/${post._id}/reply/${reply._id}/like`,
         {
           method: "PUT",
           headers: {
@@ -57,19 +57,18 @@ const CommunityActions = ({ post }) => {
       );
 
       const data = await response.json();
-      console.log("Server response data:", data);
 
       if (response.ok) {
-        const wasLikedBefore = post.likes.includes(currentUser._id);
+        const wasLikedBefore = reply.likes.includes(currentUser._id);
         if (wasLikedBefore) {
-          post.likes = post.likes.filter(
+          reply.likes = reply.likes.filter(
             (userId) => userId !== currentUser._id
           );
         } else {
-          post.likes.push(currentUser._id);
-          post.dislikes = post.dislikes.filter(
+          reply.likes.push(currentUser._id);
+          reply.dislikes = reply.dislikes.filter(
             (userId) => userId !== currentUser._id
-          ); // remove dislike if user had previously disliked
+          );
         }
 
         setIsLiked(!wasLikedBefore);
@@ -78,14 +77,14 @@ const CommunityActions = ({ post }) => {
         console.error(data.error);
       }
     } catch (error) {
-      console.error("Error liking the post:", error);
+      console.error("Error liking the reply:", error);
     }
   };
 
   const handleDislike = async () => {
     try {
       const response = await fetch(
-        `/api/community/community-post/${post._id}/dislike`,
+        `/api/community/community-post/${post._id}/reply/${reply._id}/dislike`,
         {
           method: "PUT",
           headers: {
@@ -98,14 +97,14 @@ const CommunityActions = ({ post }) => {
       console.log("Server response data:", data);
 
       if (response.ok) {
-        const wasDislikedBefore = post.dislikes.includes(currentUser._id);
+        const wasDislikedBefore = reply.dislikes.includes(currentUser._id);
         if (wasDislikedBefore) {
-          post.dislikes = post.dislikes.filter(
+          reply.dislikes = reply.dislikes.filter(
             (userId) => userId !== currentUser._id
           );
         } else {
-          post.dislikes.push(currentUser._id);
-          post.likes = post.likes.filter(
+          reply.dislikes.push(currentUser._id);
+          reply.likes = reply.likes.filter(
             (userId) => userId !== currentUser._id
           ); // remove like if user had previously liked
         }
@@ -162,7 +161,7 @@ const CommunityActions = ({ post }) => {
               aria-label="Like button"
             />
           </Tooltip>
-          <Text>{post.likes.length || 0}</Text>
+          <Text>{reply.likes.length || 0}</Text>
         </Flex>
 
         <Flex alignItems={"center"}>
@@ -177,7 +176,7 @@ const CommunityActions = ({ post }) => {
               aria-label="Dislike button"
             />
           </Tooltip>
-          <Text>{post.dislikes.length || 0}</Text>
+          <Text>{reply.dislikes.length || 0}</Text>
         </Flex>
         <Flex alignItems={"center"} ml={3}>
           <Button size={"sm"} onClick={onOpen}>
@@ -217,4 +216,4 @@ const CommunityActions = ({ post }) => {
   );
 };
 
-export default CommunityActions;
+export default CommunityReplyActions;

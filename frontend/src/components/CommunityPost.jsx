@@ -117,6 +117,7 @@ const CommunityPost = ({ posts, community }) => {
                   </Box>
                 )}
               </Flex>
+              <Text fontSize={"xs"}>{post.replies.length} replies</Text>
               <Divider mt={2} />
             </Flex>
           </Flex>

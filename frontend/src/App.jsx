@@ -19,6 +19,8 @@ import Bottombar from "./components/Bottombar";
 import CommunitiesPage from "./pages/CommunitiesPage";
 import CommunityPage from "./pages/CommunityPage";
 import CommunityPostPage from "./pages/CommunityPostPage";
+import UpdateCommunity from "./pages/UpdateCommunity";
+
 function App() {
   const user = useRecoilValue(userAtom);
   const { pathname } = useLocation();
@@ -89,6 +91,10 @@ function App() {
             <Route
               path="/community/:communityId/post/:postId"
               element={user ? <CommunityPostPage /> : <Navigate to={"/auth"} />}
+            />
+            <Route
+              path="/updateCommunity/:communityId"
+              element={user ? <UpdateCommunity /> : <Navigate to={"/auth"} />}
             />
           </Routes>
         </Container>

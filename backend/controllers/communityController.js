@@ -102,8 +102,8 @@ const addOrRemoveModerator = async (req, res) => {
 
 const updateCommunityInfo = async (req, res) => {
   try {
-    const { communityId, description, bio, coverImage, profileImage } =
-      req.body;
+    const { description, bio, coverImage, profileImage } = req.body;
+    const { communityId } = req.params;
 
     const community = await Community.findById(communityId);
     if (!community) {
@@ -314,7 +314,7 @@ const dislikeCommunityPost = async (req, res) => {
 
 const replyToCommunityPost = async (req, res) => {
   try {
-    const { text, img } = req.body; // Added img in case you want to allow image replies
+    const { text, img } = req.body;
     const postId = req.params.id;
     const userId = req.user._id;
 
@@ -329,7 +329,7 @@ const replyToCommunityPost = async (req, res) => {
 
     const reply = {
       text,
-      image: img || "", // Added this line for image replies
+      image: img || "",
       user: userId,
       createdAt: Date.now(),
     };
@@ -337,7 +337,9 @@ const replyToCommunityPost = async (req, res) => {
     post.replies.push(reply);
     await post.save();
 
-    res.status(200).json(reply);
+
+    // Send the populated last reply (the one we just added)
+    res.status(200).json(post.replies.slice(-1)[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -358,15 +360,22 @@ const likeReply = async (req, res) => {
       return res.status(404).json({ error: "Reply not found" });
     }
 
-    if (reply.likes.includes(userId)) {
+    const userLikedReply = reply.likes.includes(userId);
+    const userDislikedReply = reply.dislikes.includes(userId);
+
+    if (userLikedReply) {
       reply.likes.pull(userId);
-      await post.save();
-      return res.status(200).json({ message: "Reply unliked successfully" });
-    } else {
-      reply.likes.push(userId);
-      await post.save();
-      return res.status(200).json({ message: "Reply liked successfully" });
+      res.status(200).json({ message: "Reply unliked successfully" });
+    } else if (userDislikedReply) {
+      reply.dislikes.pull(userId);
     }
+
+    if (!userLikedReply) {
+      reply.likes.push(userId);
+      res.status(200).json({ message: "Reply liked successfully" });
+    }
+
+    await post.save();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -387,21 +396,29 @@ const dislikeReply = async (req, res) => {
       return res.status(404).json({ error: "Reply not found" });
     }
 
-    if (reply.dislikes.includes(userId)) {
+    const userLikedReply = reply.likes.includes(userId);
+    const userDislikedReply = reply.dislikes.includes(userId);
+
+    if (userDislikedReply) {
       reply.dislikes.pull(userId);
-      await post.save();
-      return res
+      res
         .status(200)
         .json({ message: "Dislike removed from reply successfully" });
-    } else {
-      reply.dislikes.push(userId);
-      await post.save();
-      return res.status(200).json({ message: "Reply disliked successfully" });
+    } else if (userLikedReply) {
+      reply.likes.pull(userId);
     }
+
+    if (!userDislikedReply) {
+      reply.dislikes.push(userId);
+      res.status(200).json({ message: "Reply disliked successfully" });
+    }
+
+    await post.save();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 const getAllCommunities = async (req, res) => {
   try {
@@ -460,7 +477,8 @@ const getCommunityPosts = async (req, res) => {
     }
 
     const posts = await CommunityPost.find({ _id: { $in: community.posts } })
-      .populate("postedBy", "username") // Assuming 'username' is a field in the User model
+      .populate("postedBy", "username profilePic") // Populate the 'postedBy' field with 'username' and 'profilePic'
+      .populate("replies.user", "username profilePic") // Populate the 'user' inside the 'replies' array with 'username' and 'profilePic'
       .sort({ createdAt: -1 }); // Sorting in descending order by creation date
 
     res.status(200).json(posts);
@@ -468,6 +486,7 @@ const getCommunityPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 const getPostReplies = async (req, res) => {
   try {

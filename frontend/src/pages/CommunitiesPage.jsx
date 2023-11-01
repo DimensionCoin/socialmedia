@@ -121,7 +121,7 @@ const CommunitiesPage = () => {
             <Box
               key={community._id}
               p={5}
-              w={{ base: "340px", md: "700px" }} // 100% width on smaller screens and 75% on medium and up
+              w="100%"// 100% width on smaller screens and 75% on medium and up
               h="auto"
               boxShadow="md"
               borderRadius="lg"
